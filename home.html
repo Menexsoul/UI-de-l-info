@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Navigation - Village Numérique Résistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "terminal-bg": "#121212",
+                        "terminal-border": "#333333",
+                        "neon-red": "#ff3333",
+                        "neon-green": "#00ff66",
+                        "neon-blue": "#00ccff",
+                        "text-light": "#e0e0e0",
+                        "text-dark": "#a0a0a0",
+                    },
+                    fontFamily: {
+                        "mono": ["'Roboto Mono'", "monospace"],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { 
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; 
+            vertical-align: middle; 
+        }
+        
+        /* Animation de glitch pour le logo */
+        .glitch-text {
+            animation: glitch 3s infinite;
+        }
+        
+        @keyframes glitch {
+            0%, 90% { 
+                text-shadow: 2px 0 #ff3333, -2px 0 #00ccff; 
+            }
+            91% { 
+                text-shadow: -2px 0 #ff3333, 2px 0 #00ccff; 
+                transform: skewX(5deg); 
+            }
+            92% { 
+                text-shadow: 2px 0 #ff3333, -2px 0 #00ccff; 
+                transform: skewX(0deg); 
+            }
+        }
+
+        /* Animation pour les liens actifs */
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00ccff;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Animation de pulse pour le bouton mobile */
+        .mobile-menu-btn:hover {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(0, 204, 255, 0.7); 
+            }
+            50% { 
+                box-shadow: 0 0 0 10px rgba(0, 204, 255, 0); 
+            }
+        }
+
+        /* Menu mobile slide */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Effet scan line */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ccff, transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(80px); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-black font-mono text-text-light">
+
+    <!-- NAVBAR -->
+    <nav class="relative bg-terminal-bg border-b-2 border-terminal-border">
+        <div class="scan-line"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- LOGO -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-neon-blue/20 p-2 rounded border border-neon-blue">
+                        <span class="material-symbols-outlined text-3xl text-neon-blue">terminal</span>
+                    </div>
+                    <div>
+                        <h1 class="text-white text-xl font-bold glitch-text">VILLAGE RÉSISTANT</h1>
+                        <p class="text-xs text-text-dark tracking-wider">// SYSTÈME v1.0</p>
+                    </div>
+                </div>
+
+                <!-- NAVIGATION DESKTOP -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="index.html" class="nav-link text-text-light hover:text-neon-green flex items-center gap-2 pb-1">
+                        <span class="material-symbols-outlined text-xl">home</span>
+                        <span class="font-medium">ACCUEIL</span>
+                    </a>
+                    
+                    <a href="decision.html" class="nav-link text-text-light hover:text-neon-blue flex items-center gap-2 pb-1">
+                        <span class="material-symbols-outlined text-xl">dashboard</span>
+                        <span class="font-medium">SIMULATION</span>
+                    </a>
+                    
+                    <a href="klub.html" class="nav-link text-text-light hover:text-neon-red flex items-center gap-2 pb-1">
+                        <span class="material-symbols-outlined text-xl">workspace_premium</span>
+                        <span class="font-medium">KLUB</span>
+                    </a>
+                </div>
+
+                <!-- STATUT SYSTÈME -->
+                <div class="hidden lg:flex items-center gap-3 px-4 py-2 bg-black/50 border border-terminal-border rounded">
+                    <div class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-neon-green"></span>
+                    </div>
+                    <span class="text-xs text-neon-green font-bold tracking-wider">SYSTÈME ACTIF</span>
+                </div>
+
+                <!-- BOUTON MENU MOBILE -->
+                <button onclick="toggleMobileMenu()" class="md:hidden mobile-menu-btn bg-neon-blue/10 text-neon-blue p-2 rounded border border-neon-blue hover:bg-neon-blue hover:text-black transition-all">
+                    <span class="material-symbols-outlined text-2xl">menu</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MENU MOBILE -->
+    <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-terminal-bg border-l-2 border-terminal-border z-50 md:hidden">
+        <div class="flex flex-col h-full">
+            <!-- Header mobile -->
+            <div class="flex items-center justify-between p-4 border-b border-terminal-border">
+                <span class="text-neon-blue font-bold tracking-wider">MENU</span>
+                <button onclick="toggleMobileMenu()" class="text-neon-red hover:bg-neon-red/10 p-1 rounded">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Navigation mobile -->
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="index.html" class="flex items-center gap-3 p-3 text-text-light hover:bg-neon-green/10 hover:text-neon-green border border-transparent hover:border-neon-green rounded transition-all">
+                    <span class="material-symbols-outlined">home</span>
+                    <span class="font-medium">ACCUEIL</span>
+                </a>
+                
+                <a href="decision.html" class="flex items-center gap-3 p-3 text-text-light hover:bg-neon-blue/10 hover:text-neon-blue border border-transparent hover:border-neon-blue rounded transition-all">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="font-medium">SIMULATION</span>
+                </a>
+                
+                <a href="klub.html" class="flex items-center gap-3 p-3 text-text-light hover:bg-neon-red/10 hover:text-neon-red border border-transparent hover:border-neon-red rounded transition-all">
+                    <span class="material-symbols-outlined">workspace_premium</span>
+                    <span class="font-medium">KLUB</span>
+                </a>
+
+                <div class="h-px bg-terminal-border my-4"></div>
+
+                <div class="p-3 bg-black/50 border border-terminal-border rounded">
+                    <p class="text-xs text-text-dark mb-2">STATUT:</p>
+                    <div class="flex items-center gap-2">
+                        <div class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-neon-green"></span>
+                        </div>
+                        <span class="text-xs text-neon-green font-bold">ONLINE</span>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Footer mobile -->
+            <div class="p-4 border-t border-terminal-border text-center">
+                <p class="text-xs text-text-dark">NUIT DE L'INFO 2025</p>
+                <p class="text-xs text-neon-blue mt-1">v1.0.0</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- OVERLAY POUR MENU MOBILE -->
+    <div id="overlay" onclick="toggleMobileMenu()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-40 md:hidden"></div>
+
+    <!-- CONTENU DE LA PAGE -->
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        <div class="text-center">
+            <h2 class="text-4xl font-bold text-white mb-4">Exemple de Page</h2>
+            <p class="text-text-dark mb-8">Ceci est une page d'exemple avec la navbar intégrée</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                <!-- Card 1 -->
+                <div class="bg-terminal-bg border-2 border-neon-green p-6 rounded">
+                    <span class="material-symbols-outlined text-5xl text-neon-green mb-4">home</span>
+                    <h3 class="text-xl font-bold text-neon-green mb-2">ACCUEIL</h3>
+                    <p class="text-text-dark text-sm">Choisissez votre niveau de difficulté</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-terminal-bg border-2 border-neon-blue p-6 rounded">
+                    <span class="material-symbols-outlined text-5xl text-neon-blue mb-4">dashboard</span>
+                    <h3 class="text-xl font-bold text-neon-blue mb-2">SIMULATION</h3>
+                    <p class="text-text-dark text-sm">Prenez des décisions stratégiques</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-terminal-bg border-2 border-neon-red p-6 rounded">
+                    <span class="material-symbols-outlined text-5xl text-neon-red mb-4">workspace_premium</span>
+                    <h3 class="text-xl font-bold text-neon-red mb-2">KLUB</h3>
+                    <p class="text-text-dark text-sm">Profitez de vos avantages</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('overlay');
+            
+            menu.classList.toggle('open');
+            overlay.classList.toggle('hidden');
+            
+            // Empêcher le scroll du body quand le menu est ouvert
+            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+        }
+
+        // Marquer le lien actif en fonction de l'URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('.nav-link');
+            
+            links.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
