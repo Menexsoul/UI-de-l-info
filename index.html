@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Décisions (NIRD/Obsolescence/Big Tech)</title>
+    <title>Accueil - Village Numérique Résistant</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -19,10 +19,9 @@
                         "terminal-border": "#333333",
                         "neon-red": "#ff3333",
                         "neon-green": "#00ff66",
+                        "neon-blue": "#00ccff",
                         "text-light": "#e0e0e0",
                         "text-dark": "#a0a0a0",
-                        "success": "#00ff66",
-                        "danger": "#ff3333",
                         "warning": "#ffff00",
                     },
                     fontFamily: {
@@ -31,6 +30,7 @@
                     boxShadow: {
                         'glitch-red': '3px 3px 0px 0px #ff3333, -3px -3px 0px 0px #333333',
                         'glitch-green': '3px 3px 0px 0px #00ff66, -3px -3px 0px 0px #333333',
+                        'glitch-blue': '3px 3px 0px 0px #00ccff, -3px -3px 0px 0px #333333',
                     },
                 },
             },
@@ -40,9 +40,16 @@
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
         .glitch-border { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
         .text-shadow-neon { text-shadow: 0 0 5px currentColor; }
-        /* Animation simple pour le changement de tour */
-        .fade-in { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Animation de scintillement pour le titre */
+        .glitch-text { animation: glitch 2s infinite; }
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 #ff3333, -2px 0 #00ccff; }
+            90% { text-shadow: 2px 0 #ff3333, -2px 0 #00ccff; }
+            91% { text-shadow: -2px 0 #ff3333, 2px 0 #00ccff; transform: skewX(10deg); }
+            92% { text-shadow: 2px 0 #ff3333, -2px 0 #00ccff; transform: skewX(0deg); }
+            100% { text-shadow: 2px 0 #ff3333, -2px 0 #00ccff; }
+        }
     </style>
 </head>
 <body class="bg-black font-mono text-text-light">
@@ -53,242 +60,99 @@
                 <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-terminal-border" style='background-image: url("https://ui-avatars.com/api/?name=LN&background=0D8ABC&color=fff");'></div>
                 <div class="flex flex-col">
                     <h1 class="text-white text-base font-medium leading-normal">Lycée Numérique</h1>
-                    <p class="text-text-dark text-sm font-normal leading-normal">// Tableau de Bord</p>
+                    <p class="text-text-dark text-sm font-normal leading-normal">// Accueil</p>
                 </div>
             </div>
-            <nav class="flex flex-col gap-2 mt-4">
-                <a class="flex items-center gap-3 px-3 py-2 text-text-dark hover:bg-terminal-border hover:text-white rounded" href="#"><span class="material-symbols-outlined text-2xl">domain</span><p class="text-sm font-medium">Départements</p></a>
-                <a class="flex items-center gap-3 px-3 py-2 text-neon-green bg-neon-green/10 border border-neon-green/50 rounded" href="#"><span class="material-symbols-outlined text-2xl !font-bold">router</span><p class="text-sm font-medium">Infrastructure</p></a>
-                <a class="flex items-center gap-3 px-3 py-2 text-text-dark hover:bg-terminal-border hover:text-white rounded" href="#"><span class="material-symbols-outlined text-2xl">shopping_cart</span><p class="text-sm font-medium">Achats</p></a>
-            </nav>
+            <div class="mt-8 p-4 border border-terminal-border rounded bg-white/5">
+                <p class="text-xs text-text-dark mb-2">STATUS SYSTÈME:</p>
+                <div class="flex items-center gap-2 text-neon-green text-sm">
+                    <span class="material-symbols-outlined text-sm">check_circle</span>
+                    <span>ONLINE</span>
+                </div>
+                <p class="text-xs text-text-dark mt-4 mb-2">CONNEXION:</p>
+                <div class="flex items-center gap-2 text-warning text-sm">
+                    <span class="material-symbols-outlined text-sm">lock</span>
+                    <span>SÉCURISÉE (NIRD)</span>
+                </div>
+            </div>
         </div>
     </aside>
 
     <main class="flex-1 flex flex-col h-screen">
         <header class="flex items-center justify-between p-4 border-b border-terminal-border bg-black">
-            <div class="flex flex-wrap gap-4">
-                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
-                    <span class="material-symbols-outlined text-neon-green text-3xl">account_balance_wallet</span>
-                    <div>
-                        <p class="text-text-dark text-xs font-medium">Budget</p>
-                        <p id="header-budget" class="text-white tracking-light text-xl font-bold leading-tight">€ 50,000</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
-                    <span class="material-symbols-outlined text-neon-green text-3xl">model_training</span>
-                    <div>
-                        <p class="text-text-dark text-xs font-medium">Autonomie Num.</p>
-                        <p id="header-autonomy" class="text-white tracking-light text-xl font-bold leading-tight">15%</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
-                    <span class="material-symbols-outlined text-neon-green text-3xl">eco</span>
-                    <div>
-                        <p class="text-text-dark text-xs font-medium">Score Éco.</p>
-                        <p id="header-eco" class="text-white tracking-light text-xl font-bold leading-tight">65/100</p>
-                    </div>
-                </div>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-neon-blue">terminal</span>
+                <span class="font-bold tracking-wider">TERMINAL_ACCES_V1.0</span>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right">
-                    <p id="header-turn" class="text-white font-semibold">Année 1 - Trimestre 1</p>
-                </div>
+            <div class="text-right">
+                <p class="text-text-dark text-sm">NUIT DE L'INFO 2025</p>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-8 flex flex-col items-center bg-black bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
-            <div class="w-full max-w-6xl bg-terminal-bg/80 backdrop-blur-sm border-2 border-terminal-border p-8 glitch-border fade-in">
-                
-                <h1 id="scenario-title" class="text-white tracking-light text-3xl md:text-4xl font-bold leading-tight text-center">CHARGEMENT...</h1>
-                <p id="scenario-desc" class="text-text-dark text-base font-normal leading-normal text-center mt-4 max-w-3xl mx-auto"></p>
-                
-                <div id="feedback-area" class="hidden mt-4 p-3 bg-white/10 border border-white/20 text-center text-white rounded"></div>
+        <div class="flex-1 overflow-y-auto p-8 flex flex-col items-center justify-center bg-black bg-[radial-gradient(circle_at_center,rgba(0,255,102,0.1),rgba(0,0,0,0.8))]">
+            
+            <div class="text-center mb-12">
+                <h1 class="text-5xl md:text-6xl font-bold text-white mb-4 glitch-text tracking-tighter">VILLAGE RÉSISTANT</h1>
+                <p class="text-xl text-text-dark max-w-2xl mx-auto">> [SYSTEM] Veuillez sélectionner le niveau de paramétrage de la simulation. L'avenir de l'établissement dépend de votre résilience face aux GAFAM.</p>
+            </div>
 
-                <div id="choices-container" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+                
+                <a href="decision.html?diff=easy" class="group relative flex flex-col bg-black/50 border-2 border-neon-green shadow-glitch-green glitch-border transition-all duration-300 hover:scale-105 hover:bg-neon-green/5 cursor-pointer">
+                    <div class="p-8 text-center">
+                        <span class="material-symbols-outlined text-6xl text-neon-green mb-4 group-hover:animate-bounce">sentiment_satisfied</span>
+                        <h2 class="text-2xl font-bold text-neon-green mb-2">INITIÉ</h2>
+                        <div class="h-1 w-12 bg-neon-green mx-auto mb-4"></div>
+                        <p class="text-sm text-text-light mb-4">"Je découvre le libre."</p>
+                        <ul class="text-left text-xs text-text-dark space-y-2 font-mono">
+                            <li class="flex items-center"><span class="material-symbols-outlined text-sm mr-2 text-neon-green">add</span>Budget Initial: € 70k</li>
+                            <li class="flex items-center"><span class="material-symbols-outlined text-sm mr-2 text-neon-green">add</span>Obsolescence: Lente</li>
+                            <li class="flex items-center"><span class="material-symbols-outlined text-sm mr-2 text-neon-green">add</span>Résistance Profs: Faible</li>
+                        </ul>
                     </div>
+                    <div class="mt-auto border-t border-neon-green/30 p-3 bg-neon-green/10 text-center text-neon-green font-bold text-sm group-hover:bg-neon-green group-hover:text-black transition-colors">
+                        LANCER LA SIMULATION >
+                    </div>
+                </a>
+
+                <a href="decision.html?diff=normal" class="group relative flex flex-col bg-black/50 border-2 border-neon-blue shadow-glitch-blue glitch-border transition-all duration-300 hover:scale-105 hover:bg-neon-blue/5 cursor-pointer">
+                    <div class="absolute -top-3 -right-3 bg-neon-blue text-black text-xs font-bold px-2 py-1 transform rotate-12">RECOMMANDÉ</div>
+                    <div class="p-8 text-center">
+                        <span class="material-symbols-outlined text-6xl text-neon-blue mb-4 group-hover:animate-bounce">shield</span>
+                        <h2 class="text-2xl font-bold text-neon-blue mb-2">RÉSISTANT</h2>
+                        <div class="h-1 w-12 bg-neon-blue mx-auto mb-4"></div>
+                        <p class="text-sm text-text-light mb-4">"David contre Goliath."</p>
+                        <ul class="text-left text-xs text-text-dark space-y-2 font-mono">
+                            <li class="flex items-center"><span class="material-symbols-outlined text-sm mr-2 text-neon-blue">remove</span>Budget Initial: € 50k</li>
+                            <li class="flex items-center"><span class="material-symbols-outlined text-sm mr-2 text-neon-blue">remove</span>Obsolescence: Normale</li>
+                            <li class="flex items-center"><span class="material-symbols-outlined text-sm mr-2 text-neon-blue">remove</span>Résistance Profs: Moyenne</li>
+                        </ul>
+                    </div>
+                    <div class="mt-auto border-t border-neon-blue/30 p-3 bg-neon-blue/10 text-center text-neon-blue font-bold text-sm group-hover:bg-neon-blue group-hover:text-black transition-colors">
+                        LANCER LA SIMULATION >
+                    </div>
+                </a>
+
+                <a href="decision.html?diff=hard" class="group relative flex flex-col bg-black/50 border-2 border-neon-red shadow-glitch-red glitch-border transition-all duration-300 hover:scale-105 hover:bg-neon-red/5 cursor-pointer">
+                    <div class="p-8 text-center">
+                        <span class="material-symbols-outlined text-6xl text-neon-red mb-4 group-hover:animate-bounce">warning</span>
+                        <h2 class="text-2xl font-bold text-neon-red mb-2">HACKER</h2>
+                        <div class="h-1 w-12 bg-neon-red mx-auto mb-4"></div>
+                        <p class="text-sm text-text-light mb-4">"L'Empire contre-attaque."</p>
+                        <ul class="text-left text-xs text-text-dark space-y-2 font-mono">
+                            <li class="flex items-center"><span class="material-symbols-outlined text-sm mr-2 text-neon-red">close</span>Budget Initial: € 20k</li>
+                            <li class="flex items-center"><span class="material-symbols-outlined text-sm mr-2 text-neon-red">close</span>Obsolescence: Critique</li>
+                            <li class="flex items-center"><span class="material-symbols-outlined text-sm mr-2 text-neon-red">close</span>Résistance Profs: Élevée</li>
+                        </ul>
+                    </div>
+                    <div class="mt-auto border-t border-neon-red/30 p-3 bg-neon-red/10 text-center text-neon-red font-bold text-sm group-hover:bg-neon-red group-hover:text-black transition-colors">
+                        LANCER LA SIMULATION >
+                    </div>
+                </a>
+
             </div>
         </div>
     </main>
 </div>
-
-<script>
-    // --- VARIABLES D'ÉTAT ---
-    let tour = 1;
-    let budget = 50; // En milliers
-    let autonomie = 15; // En %
-    let ecologie = 65; // Sur 100
-
-    // --- DONNÉES DE JEU (Adaptées avec style) ---
-    const scenarios = {
-        1: {
-            title: "DECISION_REQ_01: RENTRÉE NUMÉRIQUE",
-            desc: "> [SYSTEM] Le parc informatique est vieillissant. Une mise à niveau est requise pour la rentrée. Deux protocoles s'offrent à l'administration.",
-            options: [
-                {
-                    type: "goliath", // Style Rouge/Danger
-                    title: "Option A: Achat Neuf",
-                    desc: "// ERROR: Achat de 30 tablettes propriétaires neuves. Solution clé en main mais coûteuse et fermée.",
-                    icon: "warning",
-                    stats_display: [
-                        { label: "Budget", val: "- 20 000 €", icon: "arrow_downward", color: "text-danger" },
-                        { label: "Autonomie", val: "- 10 %", icon: "arrow_downward", color: "text-danger" },
-                        { label: "Écologie", val: "- 15 pts", icon: "delete", color: "text-danger" }
-                    ],
-                    effect: () => { budget -= 20; autonomie -= 10; ecologie -= 15; },
-                    percent: 62
-                },
-                {
-                    type: "nird", // Style Vert/Success
-                    title: "Option B: Reconditionnement",
-                    desc: "// SUCCESS: Réinstallation de Linux sur les anciens PC. Coût nul, haute maintenabilité, nécessite du temps.",
-                    icon: "recycling",
-                    stats_display: [
-                        { label: "Budget", val: "0 €", icon: "horizontal_rule", color: "text-success" },
-                        { label: "Autonomie", val: "+ 20 %", icon: "arrow_upward", color: "text-success" },
-                        { label: "Écologie", val: "+ 25 pts", icon: "eco", color: "text-success" }
-                    ],
-                    effect: () => { autonomie += 20; ecologie += 25; },
-                    percent: 38
-                }
-            ]
-        },
-        2: {
-            title: "DECISION_REQ_02: COMPÉTENCE PERSONNEL",
-            desc: "> [SYSTEM] Le nouveau système d'exploitation libre déstabilise certains enseignants. Le taux de tickets support est en hausse de 300%.",
-            options: [
-                {
-                    type: "goliath",
-                    title: "Option A: Formation Obligatoire",
-                    desc: "// ALERT: Investissement lourd dans une formation certifiante externe. Efficace mais coûteux.",
-                    icon: "school",
-                    stats_display: [
-                        { label: "Budget", val: "- 5 000 €", icon: "arrow_downward", color: "text-danger" },
-                        { label: "Autonomie", val: "+ 10 %", icon: "arrow_upward", color: "text-success" },
-                        { label: "Moral", val: "Neutre", icon: "sentiment_neutral", color: "text-text-dark" }
-                    ],
-                    effect: () => { autonomie += 10; budget -= 5; },
-                    percent: 51
-                },
-                {
-                    type: "nird",
-                    title: "Option B: Entraide (Peer-to-Peer)",
-                    desc: "// INFO: Créer des ateliers où les élèves et profs experts forment les autres. Gratuit mais lent.",
-                    icon: "groups",
-                    stats_display: [
-                        { label: "Budget", val: "0 €", icon: "horizontal_rule", color: "text-success" },
-                        { label: "Autonomie", val: "+ 3 %", icon: "arrow_upward", color: "text-success" },
-                        { label: "Communauté", val: "++ Link", icon: "favorite", color: "text-warning" }
-                    ],
-                    effect: () => { autonomie += 3; },
-                    percent: 49
-                }
-            ]
-        }
-    };
-
-    // --- MOTEUR DE JEU ---
-
-    function updateHeader() {
-        // Mise à jour visuelle des scores
-        document.getElementById("header-budget").innerText = `€ ${budget},000`;
-        document.getElementById("header-autonomy").innerText = `${autonomie}%`;
-        document.getElementById("header-eco").innerText = `${ecologie}/100`;
-        document.getElementById("header-turn").innerText = `Tour ${tour}`;
-    }
-
-    function renderStatsLines(stats) {
-        // Génère le HTML pour les petites lignes de stats dans les cartes
-        return stats.map(s => `
-            <div class="flex justify-between items-center">
-                <span class="text-text-dark">> ${s.label}:</span>
-                <div class="flex items-center gap-2 font-semibold ${s.color}">
-                    <span class="material-symbols-outlined text-base">${s.icon}</span>
-                    <span>${s.val}</span>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function renderTour() {
-        const currentData = scenarios[tour];
-        const container = document.getElementById("choices-container");
-        
-        // Nettoyage
-        container.innerHTML = "";
-        
-        if (!currentData) {
-            // Fin de la partie
-            document.getElementById("scenario-title").innerText = "SIMULATION TERMINÉE";
-            document.getElementById("scenario-desc").innerText = `> [END] Résultat final : Budget ${budget}k€ | Autonomie ${autonomie}% | Écologie ${ecologie}/100.`;
-            container.innerHTML = `<button onclick="location.reload()" class="col-span-1 md:col-span-2 bg-white text-black p-4 font-bold hover:bg-gray-200">RELANCER LE SYSTÈME</button>`;
-            return;
-        }
-
-        // Mise à jour Textes
-        document.getElementById("scenario-title").innerText = currentData.title;
-        document.getElementById("scenario-desc").innerText = currentData.desc;
-
-        // Génération des cartes
-        currentData.options.forEach((opt, index) => {
-            // Définition des styles selon le type (Goliath/Rouge ou NIRD/Vert)
-            const isGoliath = opt.type === "goliath";
-            const colorClass = isGoliath ? "neon-red" : "neon-green";
-            const shadowClass = isGoliath ? "shadow-glitch-red" : "shadow-glitch-green";
-            const btnBg = isGoliath ? "bg-neon-red/10 hover:bg-neon-red" : "bg-neon-green/10 hover:bg-neon-green";
-            const btnText = isGoliath ? "text-neon-red" : "text-neon-green";
-
-            const cardHTML = `
-            <div class="flex flex-col bg-black/50 border-2 border-${colorClass} ${shadowClass} glitch-border transition-all duration-300 hover:scale-[1.01]">
-                <div class="p-6 relative">
-                    <span class="material-symbols-outlined text-4xl text-${colorClass} absolute top-4 right-4">${opt.icon}</span>
-                    <h3 class="text-2xl font-bold text-${colorClass} text-shadow-neon">${opt.title}</h3>
-                    <p class="text-sm text-text-dark mt-2 h-16">${opt.desc}</p>
-                </div>
-                
-                <div class="border-t border-${colorClass}/50 p-6 space-y-3 text-sm">
-                    ${renderStatsLines(opt.stats_display)}
-                </div>
-
-                <div class="p-6 mt-auto">
-                    <button onclick="choisir(${index})" class="w-full ${btnBg} ${btnText} hover:text-black font-bold py-3 px-4 border border-${colorClass} transition-colors uppercase tracking-wider">
-                        Exécuter le protocole
-                    </button>
-                </div>
-            </div>
-            `;
-            container.innerHTML += cardHTML;
-        });
-
-        updateHeader();
-    }
-
-    function choisir(index) {
-        const currentScenario = scenarios[tour];
-        const choice = currentScenario.options[index];
-
-        // 1. Appliquer les effets
-        choice.effect();
-
-        // 2. Feedback visuel
-        const feedback = document.getElementById("feedback-area");
-        feedback.innerHTML = `> ACTION ENREGISTRÉE : ${choice.title}<br><span class="text-text-dark text-xs">Choisi par ${choice.percent}% des autres établissements.</span>`;
-        feedback.classList.remove("hidden");
-
-        // 3. Tour suivant
-        tour++;
-        updateHeader();
-
-        // Petit délai pour l'immersion
-        setTimeout(() => {
-            renderTour();
-            // Cacher le feedback après transition
-            // feedback.classList.add("hidden"); 
-        }, 800);
-    }
-
-    // Initialisation
-    renderTour();
-
-</script>
 </body>
 </html>
