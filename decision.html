@@ -7,7 +7,9 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
     <script src="data.js"></script>
+    
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -20,6 +22,7 @@
                         "terminal-border": "#333333",
                         "neon-red": "#ff3333",
                         "neon-green": "#00ff66",
+                        "neon-blue": "#00ccff",
                         "text-light": "#e0e0e0",
                         "text-dark": "#a0a0a0",
                         "success": "#00ff66",
@@ -32,6 +35,7 @@
                     boxShadow: {
                         'glitch-red': '3px 3px 0px 0px #ff3333, -3px -3px 0px 0px #333333',
                         'glitch-green': '3px 3px 0px 0px #00ff66, -3px -3px 0px 0px #333333',
+                        'glitch-blue': '3px 3px 0px 0px #00ccff, -3px -3px 0px 0px #333333',
                     },
                 },
             },
@@ -41,8 +45,7 @@
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
         .glitch-border { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
         .text-shadow-neon { text-shadow: 0 0 5px currentColor; }
-        /* Animation simple pour le changement de tour */
-        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -58,8 +61,20 @@
                 </div>
             </div>
             <nav class="flex flex-col gap-2 mt-4">
-                <a class="flex items-center gap-3 px-3 py-2 text-neon-green bg-neon-green/10 border border-neon-green/50 rounded" href="#"><span class="material-symbols-outlined text-2xl !font-bold">router</span><p class="text-sm font-medium">Infrastructure</p></a>
-                <a class="flex items-center gap-3 px-3 py-2 text-text-dark hover:bg-terminal-border hover:text-white rounded" href="#"><span class="material-symbols-outlined text-2xl">shopping_cart</span><p class="text-sm font-medium">Achats</p></a>
+                <button onclick="switchView('game')" class="flex w-full items-center gap-3 px-3 py-2 text-text-dark hover:bg-terminal-border hover:text-white rounded text-left focus:bg-terminal-border focus:text-white">
+                    <span class="material-symbols-outlined text-2xl">dashboard</span>
+                    <p class="text-sm font-medium">Décisions</p>
+                </button>
+                <button onclick="switchView('shop')" class="flex w-full items-center gap-3 px-3 py-2 text-neon-blue bg-neon-blue/5 border border-neon-blue/30 rounded text-left hover:bg-neon-blue/10">
+                    <span class="material-symbols-outlined text-2xl !font-bold">shopping_cart</span>
+                    <p class="text-sm font-medium">Achats / Bonus</p>
+                </button>
+                <div class="h-px bg-terminal-border my-2"></div>
+                <div class="px-3 text-xs text-text-dark">INFRASTRUCTURE</div>
+                <div class="flex items-center gap-3 px-3 py-1 text-text-dark">
+                    <span class="material-symbols-outlined text-lg text-neon-green">check_circle</span>
+                    <span class="text-xs">Serveur NIRD: ON</span>
+                </div>
             </nav>
         </div>
     </aside>
@@ -67,161 +82,198 @@
     <main class="flex-1 flex flex-col h-screen">
         <header class="flex items-center justify-between p-4 border-b border-terminal-border bg-black">
             <div class="flex flex-wrap gap-4">
-                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
+                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border bg-black">
                     <span class="material-symbols-outlined text-neon-green text-3xl">account_balance_wallet</span>
                     <div>
                         <p class="text-text-dark text-xs font-medium">Budget</p>
                         <p id="header-budget" class="text-white tracking-light text-xl font-bold leading-tight">€ 50,000</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
+                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border bg-black">
                     <span class="material-symbols-outlined text-neon-green text-3xl">model_training</span>
                     <div>
-                        <p class="text-text-dark text-xs font-medium">Autonomie Num.</p>
+                        <p class="text-text-dark text-xs font-medium">Autonomie</p>
                         <p id="header-autonomy" class="text-white tracking-light text-xl font-bold leading-tight">15%</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
+                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border bg-black">
                     <span class="material-symbols-outlined text-neon-green text-3xl">eco</span>
                     <div>
-                        <p class="text-text-dark text-xs font-medium">Score Éco.</p>
+                        <p class="text-text-dark text-xs font-medium">Écologie</p>
                         <p id="header-eco" class="text-white tracking-light text-xl font-bold leading-tight">65/100</p>
                     </div>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right">
-                    <p id="header-turn" class="text-white font-semibold">Année 1 - Trimestre 1</p>
-                </div>
+            <div class="text-right hidden sm:block">
+                <p id="header-turn" class="text-white font-semibold">Tour 1</p>
+                <p class="text-xs text-text-dark uppercase tracking-widest">En attente d'ordre</p>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-8 flex flex-col items-center bg-black bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
-            <div class="w-full max-w-6xl bg-terminal-bg/80 backdrop-blur-sm border-2 border-terminal-border p-8 glitch-border fade-in">
-                
-                <h1 id="scenario-title" class="text-white tracking-light text-3xl md:text-4xl font-bold leading-tight text-center">CHARGEMENT...</h1>
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col items-center bg-black bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.2),rgba(255,255,255,0))]">
+            
+            <div id="game-view" class="w-full max-w-6xl bg-terminal-bg/80 backdrop-blur-sm border-2 border-terminal-border p-8 glitch-border fade-in">
+                <h1 id="scenario-title" class="text-white tracking-light text-3xl md:text-4xl font-bold leading-tight text-center">INITIALISATION...</h1>
                 <p id="scenario-desc" class="text-text-dark text-base font-normal leading-normal text-center mt-4 max-w-3xl mx-auto"></p>
-                
-                <div id="feedback-area" class="hidden mt-4 p-3 bg-white/10 border border-white/20 text-center text-white rounded"></div>
-
-                <div id="choices-container" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-                    </div>
+                <div id="feedback-area" class="hidden mt-6 p-4 bg-white/5 border-l-4 border-neon-blue text-white rounded shadow-lg max-w-3xl mx-auto"></div>
+                <div id="choices-container" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8"></div>
             </div>
+
+            <div id="shop-view" class="hidden w-full max-w-6xl fade-in">
+                <div class="mb-6 flex items-center justify-between">
+                    <h2 class="text-3xl font-bold text-neon-blue text-shadow-neon">MARCHÉ DES RESSOURCES</h2>
+                    <button onclick="switchView('game')" class="text-sm border border-terminal-border px-4 py-2 hover:bg-white/10 rounded">RETOUR AU JEU</button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="shop-container">
+                    </div>
+                
+                <div class="mt-8 p-4 border border-warning/30 bg-warning/5 rounded text-warning text-sm flex gap-3 items-start">
+                    <span class="material-symbols-outlined">info</span>
+                    <p>Les acquisitions prennent effet immédiatement. Utilisez vos ressources stratégiquement pour survivre aux crises à venir. Attention : certaines transactions ont un impact écologique négatif.</p>
+                </div>
+            </div>
+
         </div>
     </main>
 </div>
 
 <script>
-    // --- VARIABLES D'ÉTAT ---
+    // --- VARIABLES D'ÉTAT GLOBALES ---
+    // (Accessibles par data.js car elles sont dans le scope global)
     let tour = 1;
-    let budget = 50;
-    let autonomie = 15;
-    let ecologie = 65;
+    let budget = 50; // k€
+    let autonomie = 15; // %
+    let ecologie = 65; // pts
 
+    // --- LECTURE DES PARAMETRES URL (Difficulté) ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const difficulty = urlParams.get('diff') || 'normal';
+
+    // Ajustement selon difficulté
+    if(difficulty === 'easy') { budget = 70; autonomie = 20; }
+    if(difficulty === 'hard') { budget = 20; autonomie = 5; ecologie = 50; }
 
     // --- MOTEUR DE JEU ---
 
+    function switchView(viewName) {
+        document.getElementById('game-view').classList.add('hidden');
+        document.getElementById('shop-view').classList.add('hidden');
+        
+        if(viewName === 'game') {
+            document.getElementById('game-view').classList.remove('hidden');
+            renderTour(); 
+        } else {
+            document.getElementById('shop-view').classList.remove('hidden');
+            renderShop(); 
+        }
+    }
+
     function updateHeader() {
-        // Mise à jour visuelle des scores
-        document.getElementById("header-budget").innerText = `€ ${budget},000`;
+        document.getElementById("header-budget").innerText = `€ ${parseFloat(budget).toFixed(1)}k`;
         document.getElementById("header-autonomy").innerText = `${autonomie}%`;
         document.getElementById("header-eco").innerText = `${ecologie}/100`;
         document.getElementById("header-turn").innerText = `Tour ${tour}`;
     }
 
-    function renderStatsLines(stats) {
-        // Génère le HTML pour les petites lignes de stats dans les cartes
-        return stats.map(s => `
-            <div class="flex justify-between items-center">
-                <span class="text-text-dark">> ${s.label}:</span>
-                <div class="flex items-center gap-2 font-semibold ${s.color}">
-                    <span class="material-symbols-outlined text-base">${s.icon}</span>
-                    <span>${s.val}</span>
+    // --- LOGIQUE BOUTIQUE ---
+    function renderShop() {
+        const container = document.getElementById("shop-container");
+        container.innerHTML = "";
+
+        // shopItems provient de data.js
+        shopItems.forEach(item => {
+            const affordable = item.canBuy(); // Cette fonction utilise les variables globales
+            const opacityClass = affordable ? "opacity-100" : "opacity-50 grayscale";
+            const btnClass = affordable 
+                ? `bg-${item.color}/20 text-${item.color} border-${item.color} hover:bg-${item.color}/40 cursor-pointer` 
+                : "bg-gray-800 text-gray-500 border-gray-700 cursor-not-allowed";
+
+            const card = `
+            <div class="flex flex-col bg-terminal-bg border border-terminal-border p-5 rounded ${opacityClass} transition-all">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="material-symbols-outlined text-3xl text-${item.color}">${item.icon}</span>
+                    <span class="text-xs font-bold border border-${item.color} text-${item.color} px-2 py-1 rounded">${item.costDesc}</span>
                 </div>
-            </div>
-        `).join('');
+                <h3 class="font-bold text-white text-lg">${item.name}</h3>
+                <p class="text-xs text-text-dark mt-1 mb-4 flex-grow">${item.desc}</p>
+                <div class="text-sm font-semibold text-${item.color} mb-4">Effet: ${item.effectDesc}</div>
+                <button onclick="buyItem('${item.id}')" ${!affordable ? 'disabled' : ''} class="w-full py-2 border rounded font-bold uppercase text-sm ${btnClass}">
+                    ${affordable ? 'ACHETER' : 'INDISPONIBLE'}
+                </button>
+            </div>`;
+            container.innerHTML += card;
+        });
+        updateHeader();
     }
 
+    function buyItem(id) {
+        const item = shopItems.find(i => i.id === id);
+        if(item && item.canBuy()) {
+            const msg = item.buy(); // Exécute l'effet
+            alert(`TRANSACTION RÉUSSIE : ${msg}`); 
+            renderShop(); 
+            
+            const feedback = document.getElementById("feedback-area");
+            feedback.innerHTML = `> ACHAT BOUTIQUE : ${item.name}<br>${msg}`;
+            feedback.classList.remove("hidden");
+        }
+    }
+
+    // --- LOGIQUE SCÉNARIOS ---
     function renderTour() {
+        // scenarios provient de data.js
         const currentData = scenarios[tour];
         const container = document.getElementById("choices-container");
-        
-        // Nettoyage
         container.innerHTML = "";
         
         if (!currentData) {
-            // Fin de la partie
             document.getElementById("scenario-title").innerText = "SIMULATION TERMINÉE";
-            document.getElementById("scenario-desc").innerText = `> [END] Résultat final : Budget ${budget}k€ | Autonomie ${autonomie}% | Écologie ${ecologie}/100.`;
-            container.innerHTML = `<button onclick="location.reload()" class="col-span-1 md:col-span-2 bg-white text-black p-4 font-bold hover:bg-gray-200">RELANCER LE SYSTÈME</button>`;
+            document.getElementById("scenario-desc").innerText = `> Score Final: Budget ${budget}k | Auto ${autonomie}% | Éco ${ecologie}`;
             return;
         }
 
-        // Mise à jour Textes
         document.getElementById("scenario-title").innerText = currentData.title;
         document.getElementById("scenario-desc").innerText = currentData.desc;
 
-        // Génération des cartes
         currentData.options.forEach((opt, index) => {
-            // Définition des styles selon le type (Goliath/Rouge ou NIRD/Vert)
             const isGoliath = opt.type === "goliath";
-            const colorClass = isGoliath ? "neon-red" : "neon-green";
-            const shadowClass = isGoliath ? "shadow-glitch-red" : "shadow-glitch-green";
-            const btnBg = isGoliath ? "bg-neon-red/10 hover:bg-neon-red" : "bg-neon-green/10 hover:bg-neon-green";
-            const btnText = isGoliath ? "text-neon-red" : "text-neon-green";
-
-            const cardHTML = `
-            <div class="flex flex-col bg-black/50 border-2 border-${colorClass} ${shadowClass} glitch-border transition-all duration-300 hover:scale-[1.01]">
+            const color = isGoliath ? "neon-red" : "neon-green";
+            const card = `
+            <div class="flex flex-col bg-black/50 border-2 border-${color} shadow-glitch-${isGoliath?'red':'green'} glitch-border hover:scale-[1.01] transition-all">
                 <div class="p-6 relative">
-                    <span class="material-symbols-outlined text-4xl text-${colorClass} absolute top-4 right-4">${opt.icon}</span>
-                    <h3 class="text-2xl font-bold text-${colorClass} text-shadow-neon">${opt.title}</h3>
-                    <p class="text-sm text-text-dark mt-2 h-16">${opt.desc}</p>
+                    <span class="material-symbols-outlined text-4xl text-${color} absolute top-4 right-4">${opt.icon}</span>
+                    <h3 class="text-xl font-bold text-${color}">${opt.title}</h3>
+                    <p class="text-sm text-text-dark mt-2 h-12">${opt.desc}</p>
                 </div>
-                
-                <div class="border-t border-${colorClass}/50 p-6 space-y-3 text-sm">
-                    ${renderStatsLines(opt.stats_display)}
+                <div class="border-t border-${color}/50 p-4 space-y-2 text-sm">
+                    ${opt.stats.map(s => `<div class="flex justify-between"><span class="text-text-dark">${s.l}</span><span class="${s.c}">${s.v}</span></div>`).join('')}
                 </div>
-
-                <div class="p-6 mt-auto">
-                    <button onclick="choisir(${index})" class="w-full ${btnBg} ${btnText} hover:text-black font-bold py-3 px-4 border border-${colorClass} transition-colors uppercase tracking-wider">
-                        Exécuter le protocole
+                <div class="p-4 mt-auto">
+                    <button onclick="choisir(${index})" class="w-full bg-${color}/10 text-${color} hover:bg-${color} hover:text-black font-bold py-3 border border-${color} transition-colors">
+                        EXÉCUTER
                     </button>
                 </div>
-            </div>
-            `;
-            container.innerHTML += cardHTML;
+            </div>`;
+            container.innerHTML += card;
         });
-
         updateHeader();
     }
 
     function choisir(index) {
-        const currentScenario = scenarios[tour];
-        const choice = currentScenario.options[index];
-
-        // 1. Appliquer les effets
+        const choice = scenarios[tour].options[index];
         choice.effect();
-
-        // 2. Feedback visuel
-        const feedback = document.getElementById("feedback-area");
-        feedback.innerHTML = `> ACTION ENREGISTRÉE : ${choice.title}<br><span class="text-text-dark text-xs">Choisi par ${choice.percent}% des autres établissements.</span>`;
-        feedback.classList.remove("hidden");
-
-        // 3. Tour suivant
         tour++;
-        updateHeader();
-
-        // Petit délai pour l'immersion
+        
+        document.getElementById("choices-container").innerHTML = `<div class="col-span-2 text-center text-neon-blue animate-pulse">TRAITEMENT DES DONNÉES...</div>`;
         setTimeout(() => {
             renderTour();
-            // Cacher le feedback après transition
-            // feedback.classList.add("hidden"); 
-        }, 800);
+            document.getElementById("feedback-area").classList.add("hidden");
+        }, 600);
     }
 
     // Initialisation
     renderTour();
-
 </script>
 </body>
 </html>
