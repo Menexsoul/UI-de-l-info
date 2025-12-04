@@ -180,15 +180,10 @@
 <script>
     // --- VARIABLES D'ÉTAT ---
     let tour = 1;
-    let budget = 50; 
-    let autonomie = 15; 
-    let ecologie = 65; 
-
-    // Lecture URL
+    
+    // Lecture URL et variables globales sont maintenant définies dans data.js
     const urlParams = new URLSearchParams(window.location.search);
     const difficulty = urlParams.get('diff') || 'normal';
-    if(difficulty === 'easy') { budget = 70; autonomie = 20; }
-    if(difficulty === 'hard') { budget = 20; autonomie = 5; ecologie = 50; }
 
     // --- MOTEUR DE JEU ---
     function switchView(viewName) {

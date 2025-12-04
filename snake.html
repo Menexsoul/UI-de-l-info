@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Snake - Jeu Classique</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "neon-red": "#ff3333",
+                        "neon-green": "#00ff66",
+                        "neon-blue": "#00ccff",
+                        "terminal-bg": "#121212",
+                        "terminal-border": "#333333",
+                        "text-light": "#e0e0e0",
+                        "text-dark": "#a0a0a0",
+                    },
+                    fontFamily: {
+                        "mono": ["'Roboto Mono'", "monospace"],
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        body { background-color: #0a0a0a; }
+        canvas { border: 3px solid #00ff66; background-color: #121212; image-rendering: pixelated; }
+        .snake-block { background-color: #00ff66; box-shadow: 0 0 10px #00ff66; }
+        .food-block { background-color: #ff3333; box-shadow: 0 0 10px #ff3333; }
+        .game-over-animation { animation: pulse 0.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .score-text { font-family: 'Roboto Mono', monospace; font-weight: 700; letter-spacing: 2px; }
+    </style>
+</head>
+
+<body class="bg-black font-mono text-text-light flex items-center justify-center min-h-screen">
+    <div class="flex flex-col items-center gap-6">
+        <!-- Titre -->
+        <div class="text-center">
+            <h1 class="text-5xl font-bold text-neon-green mb-2">SNAKE</h1>
+            <p class="text-text-dark text-sm">// Jeu classique du serpent</p>
+        </div>
+
+        <!-- Conteneur du jeu -->
+        <div class="flex gap-8">
+            <!-- Canvas du jeu -->
+            <div class="flex flex-col gap-4">
+                <canvas id="gameCanvas" width="400" height="400"></canvas>
+                <div class="text-center text-text-dark text-sm">
+                    <p>↑↓←→ ou ZQSD pour contrôler</p>
+                </div>
+            </div>
+
+            <!-- Panneau d'informations -->
+            <div class="flex flex-col gap-6 bg-terminal-bg border border-terminal-border p-6 rounded w-64">
+                <!-- Score -->
+                <div>
+                    <p class="text-text-dark text-xs mb-2">SCORE</p>
+                    <p id="score" class="score-text text-neon-green text-3xl">0</p>
+                </div>
+
+                <!-- Meilleur score -->
+                <div>
+                    <p class="text-text-dark text-xs mb-2">MEILLEUR SCORE</p>
+                    <p id="bestScore" class="score-text text-neon-blue text-2xl">0</p>
+                </div>
+
+                <!-- Longueur du serpent -->
+                <div>
+                    <p class="text-text-dark text-xs mb-2">LONGUEUR</p>
+                    <p id="length" class="score-text text-neon-green text-2xl">3</p>
+                </div>
+
+                <!-- Vitesse -->
+                <div>
+                    <p class="text-text-dark text-xs mb-2">VITESSE</p>
+                    <p id="speed" class="score-text text-neon-blue text-2xl">3</p>
+                </div>
+
+                <!-- Status -->
+                <div class="border-t border-terminal-border pt-4">
+                    <p id="status" class="text-neon-green text-sm text-center">● EN JEU</p>
+                </div>
+
+                <!-- Boutons -->
+                <div class="flex gap-2">
+                    <button id="pauseBtn" class="flex-1 bg-neon-blue/20 border border-neon-blue text-neon-blue px-4 py-2 rounded hover:bg-neon-blue/30 transition text-sm font-bold">
+                        PAUSE
+                    </button>
+                    <button id="resetBtn" class="flex-1 bg-neon-red/20 border border-neon-red text-neon-red px-4 py-2 rounded hover:bg-neon-red/30 transition text-sm font-bold">
+                        RESET
+                    </button>
+                </div>
+
+                <!-- Difficulté -->
+                <div class="border-t border-terminal-border pt-4">
+                    <p class="text-text-dark text-xs mb-2">DIFFICULTÉ</p>
+                    <div class="flex gap-2">
+                        <button class="difficulty-btn flex-1 bg-neon-green/20 border border-neon-green text-neon-green px-2 py-1 rounded text-xs font-bold" data-speed="2">FACILE</button>
+                        <button class="difficulty-btn flex-1 bg-neon-blue/20 border border-neon-blue text-neon-blue px-2 py-1 rounded text-xs font-bold active" data-speed="3">NORMAL</button>
+                        <button class="difficulty-btn flex-1 bg-neon-red/20 border border-neon-red text-neon-red px-2 py-1 rounded text-xs font-bold" data-speed="5">HARD</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="mt-8 text-center text-text-dark text-sm max-w-2xl bg-terminal-bg border border-terminal-border p-4 rounded">
+            <p class="mb-2">
+                <span class="text-neon-green">●</span> Mangez les carrés rouges pour grandir
+            </p>
+            <p class="mb-2">
+                <span class="text-neon-green">●</span> Évitez les murs et votre propre queue
+            </p>
+            <p>
+                <span class="text-neon-green">●</span> Plus vous mangez, plus le jeu s'accélère
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // === CONFIGURATION ===
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const gridSize = 20;
+        const tileCount = canvas.width / gridSize;
+
+        // === VARIABLES DE JEU ===
+        let snake = [{ x: 10, y: 10 }];
+        let direction = { x: 1, y: 0 };
+        let nextDirection = { x: 1, y: 0 };
+        let food = generateFood();
+        let score = 0;
+        let gameRunning = true;
+        let gamePaused = false;
+        let gameOverFlag = false;
+        let speed = 3;
+        let gameSpeed = speed;
+        let frameCount = 0;
+
+        // Charger le meilleur score
+        let bestScore = localStorage.getItem('snakeBestScore') ? parseInt(localStorage.getItem('snakeBestScore')) : 0;
+        document.getElementById('bestScore').textContent = bestScore;
+
+        // === FONCTIONS ===
+        function generateFood() {
+            let newFood;
+            let validPosition = false;
+            while (!validPosition) {
+                newFood = {
+                    x: Math.floor(Math.random() * tileCount),
+                    y: Math.floor(Math.random() * tileCount)
+                };
+                validPosition = !snake.some(seg => seg.x === newFood.x && seg.y === newFood.y);
+            }
+            return newFood;
+        }
+
+        function update() {
+            if (gamePaused || !gameRunning) return;
+
+            frameCount++;
+            if (frameCount < (10 - gameSpeed)) return;
+            frameCount = 0;
+
+            // Appliquer la prochaine direction
+            direction = nextDirection;
+
+            // Calculer la nouvelle tête
+            const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+            // Vérifier les collisions avec les murs
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+                gameOver();
+                return;
+            }
+
+            // Vérifier les collisions avec le corps
+            if (snake.some(seg => seg.x === head.x && seg.y === head.y)) {
+                gameOver();
+                return;
+            }
+
+            snake.unshift(head);
+
+            // Vérifier si on a mangé la nourriture
+            if (head.x === food.x && head.y === food.y) {
+                score += 10;
+                food = generateFood();
+                
+                // Augmenter légèrement la vitesse
+                if (snake.length % 3 === 0 && gameSpeed < 8) {
+                    gameSpeed++;
+                    document.getElementById('speed').textContent = gameSpeed;
+                }
+
+                document.getElementById('score').textContent = score;
+                document.getElementById('length').textContent = snake.length;
+            } else {
+                snake.pop();
+            }
+        }
+
+        function draw() {
+            // Effacer le canvas
+            ctx.fillStyle = '#121212';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Grille
+            ctx.strokeStyle = '#333333';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i <= tileCount; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * gridSize, 0);
+                ctx.lineTo(i * gridSize, canvas.height);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(0, i * gridSize);
+                ctx.lineTo(canvas.width, i * gridSize);
+                ctx.stroke();
+            }
+
+            // Dessiner la nourriture
+            ctx.fillStyle = '#ff3333';
+            ctx.shadowColor = '#ff3333';
+            ctx.shadowBlur = 10;
+            ctx.fillRect(food.x * gridSize + 2, food.y * gridSize + 2, gridSize - 4, gridSize - 4);
+            ctx.shadowBlur = 0;
+
+            // Dessiner le serpent
+            snake.forEach((segment, index) => {
+                if (index === 0) {
+                    ctx.fillStyle = '#00ff66';
+                    ctx.shadowColor = '#00ff66';
+                    ctx.shadowBlur = 15;
+                } else {
+                    ctx.fillStyle = '#00cc55';
+                    ctx.shadowColor = '#00cc55';
+                    ctx.shadowBlur = 8;
+                }
+                ctx.fillRect(segment.x * gridSize + 1, segment.y * gridSize + 1, gridSize - 2, gridSize - 2);
+            });
+            ctx.shadowBlur = 0;
+
+            // Afficher "PAUSE" si en pause
+            if (gamePaused) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#00ccff';
+                ctx.font = 'bold 40px Roboto Mono';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('PAUSE', canvas.width / 2, canvas.height / 2);
+            }
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            gameOverFlag = true;
+            
+            if (score > bestScore) {
+                bestScore = score;
+                localStorage.setItem('snakeBestScore', bestScore);
+                document.getElementById('bestScore').textContent = bestScore;
+            }
+
+            document.getElementById('status').textContent = '✕ GAME OVER';
+            document.getElementById('status').className = 'text-neon-red text-sm text-center';
+        }
+
+        function reset() {
+            snake = [{ x: 10, y: 10 }];
+            direction = { x: 1, y: 0 };
+            nextDirection = { x: 1, y: 0 };
+            food = generateFood();
+            score = 0;
+            gameRunning = true;
+            gameOverFlag = false;
+            gamePaused = false;
+            gameSpeed = speed;
+            frameCount = 0;
+
+            document.getElementById('score').textContent = score;
+            document.getElementById('length').textContent = snake.length;
+            document.getElementById('status').textContent = '● EN JEU';
+            document.getElementById('status').className = 'text-neon-green text-sm text-center';
+            document.getElementById('pauseBtn').textContent = 'PAUSE';
+        }
+
+        function togglePause() {
+            if (!gameRunning) return;
+            gamePaused = !gamePaused;
+            document.getElementById('pauseBtn').textContent = gamePaused ? 'REPRENDRE' : 'PAUSE';
+            document.getElementById('status').textContent = gamePaused ? '⏸ PAUSE' : '● EN JEU';
+            document.getElementById('status').className = gamePaused ? 'text-neon-blue text-sm text-center' : 'text-neon-green text-sm text-center';
+        }
+
+        // === ÉVÉNEMENTS CLAVIER ===
+        document.addEventListener('keydown', (e) => {
+            if (gamePaused && gameRunning) return;
+            
+            switch(e.key.toLowerCase()) {
+                case 'arrowup':
+                case 'z':
+                    if (direction.y === 0) nextDirection = { x: 0, y: -1 };
+                    e.preventDefault();
+                    break;
+                case 'arrowdown':
+                case 's':
+                    if (direction.y === 0) nextDirection = { x: 0, y: 1 };
+                    e.preventDefault();
+                    break;
+                case 'arrowleft':
+                case 'q':
+                    if (direction.x === 0) nextDirection = { x: -1, y: 0 };
+                    e.preventDefault();
+                    break;
+                case 'arrowright':
+                case 'd':
+                    if (direction.x === 0) nextDirection = { x: 1, y: 0 };
+                    e.preventDefault();
+                    break;
+                case ' ':
+                    togglePause();
+                    e.preventDefault();
+                    break;
+            }
+        });
+
+        // === BOUTONS ===
+        document.getElementById('pauseBtn').addEventListener('click', togglePause);
+        document.getElementById('resetBtn').addEventListener('click', reset);
+
+        // Difficulté
+        document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                speed = parseInt(btn.dataset.speed);
+                gameSpeed = speed;
+                frameCount = 0;
+            });
+        });
+
+        // === BOUCLE DE JEU ===
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>

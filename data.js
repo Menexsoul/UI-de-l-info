@@ -1,3 +1,9 @@
+// --- INITIALISATION DES VARIABLES GLOBALES ---
+// Ces variables sont utilisées partout dans le jeu
+let budget = 50;
+let autonomie = 15;
+let ecologie = 65;
+
 // --- CONFIGURATION DE LA DIFFICULTÉ ---
 // On récupère le paramètre 'diff' depuis l'URL (passé par decision.html)
 const urlParamsData = new URLSearchParams(window.location.search);
@@ -7,6 +13,16 @@ const diff = urlParamsData.get('diff') || 'normal';
 let costMult = 1;      // Multiplicateur de coût (Budget)
 let rewardMult = 1;    // Multiplicateur de gain (Autonomie)
 let ecoMult = 1;       // Impact écologique
+
+// Adapter les valeurs initiales selon la difficulté
+if (diff === 'easy') {
+    budget = 70;
+    autonomie = 20;
+} else if (diff === 'hard') {
+    budget = 20;
+    autonomie = 5;
+    ecologie = 50;
+}
 
 if (diff === 'easy') {
     console.log("Mode: INITIÉ (Facile)");
