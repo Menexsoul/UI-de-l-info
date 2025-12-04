@@ -1,202 +1,234 @@
 <!DOCTYPE html>
-<html class="dark" lang="fr"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Écran des Décisions</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#13ec37",
-              "background-light": "#f6f8f6",
-              "background-dark": "#102213",
-              "success": { "DEFAULT": "#13ec37", "dark": "#10b981", "light": "#d1fae5" },
-              "danger": { "DEFAULT": "#ef4444", "dark": "#f87171", "light": "#fee2e2" },
-              "warning": { "DEFAULT": "#f59e0b", "dark": "#fbbf24", "light": "#fef3c7" },
-            },
-            fontFamily: {
-              "display": ["Lexend", "sans-serif"]
-            },
-            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
-          },
-        },
-      }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-    </style>
-</head>
-<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
-<div class="flex h-screen w-full">
-<aside class="flex w-64 flex-col bg-background-light dark:bg-background-dark border-r border-gray-200 dark:border-gray-800 p-4">
-<div class="flex flex-col gap-4">
-<div class="flex items-center gap-3">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="School logo with a digital theme" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAMOs-ClyjS6WTQsBzOZu91yPuAEdQnYJkLFfaNHDtlHRDDw2jS2iUWfd7j0vvdY99M3SCUlsTBFKOHidltSkKmKz13m3G-bj8GbQL16uAXUfdxnmlM1DMOsG2E2SRqhtY-yHu0hk6SGqWvtKOBRk6lQCtPRMsMQvNh3lNR07zHQnzcBfFT1SBFpl8bG_XnaeV7i36dux80md48PPYulzkwOBVg_NiKdZ0B15IiCuow_3ec8iubWnaJQHfkz5wUcn5tw83rcEJp5H1-");'></div>
-<div class="flex flex-col">
-<h1 class="text-gray-900 dark:text-white text-base font-medium leading-normal">Lycée Numérique</h1>
-<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Tableau de Bord</p>
-</div>
-</div>
-<nav class="flex flex-col gap-2 mt-4">
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" href="#">
-<span class="material-symbols-outlined text-2xl">domain</span>
-<p class="text-sm font-medium leading-normal">Départements</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-900 dark:text-white rounded-lg bg-primary/20 dark:bg-primary/20" href="#">
-<span class="material-symbols-outlined text-2xl !font-bold">router</span>
-<p class="text-sm font-medium leading-normal">Infrastructure Réseau</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" href="#">
-<span class="material-symbols-outlined text-2xl">shopping_cart</span>
-<p class="text-sm font-medium leading-normal">Achats de Matériel</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" href="#">
-<span class="material-symbols-outlined text-2xl">groups</span>
-<p class="text-sm font-medium leading-normal">Personnel</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" href="#">
-<span class="material-symbols-outlined text-2xl">science</span>
-<p class="text-sm font-medium leading-normal">R&amp;D</p>
-</a>
-</nav>
-</div>
-<div class="mt-auto">
-</div>
-</aside>
-<main class="flex-1 flex flex-col h-screen">
-<header class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark">
-<div class="flex flex-wrap gap-4">
-<div class="flex items-center gap-3 min-w-[158px] rounded-lg p-3 border border-gray-200 dark:border-gray-800">
-<span class="material-symbols-outlined text-primary text-3xl">account_balance_wallet</span>
-<div>
-<p class="text-gray-600 dark:text-gray-400 text-xs font-medium">Budget</p>
-<p class="text-gray-900 dark:text-white tracking-light text-xl font-bold leading-tight">€ 50,000</p>
-</div>
-</div>
-<div class="flex items-center gap-3 min-w-[158px] rounded-lg p-3 border border-gray-200 dark:border-gray-800">
-<span class="material-symbols-outlined text-primary text-3xl">model_training</span>
-<div>
-<p class="text-gray-600 dark:text-gray-400 text-xs font-medium">Autonomie Numérique</p>
-<p class="text-gray-900 dark:text-white tracking-light text-xl font-bold leading-tight">15%</p>
-</div>
-</div>
-<div class="flex items-center gap-3 min-w-[158px] rounded-lg p-3 border border-gray-200 dark:border-gray-800">
-<span class="material-symbols-outlined text-primary text-3xl">eco</span>
-<div>
-<p class="text-gray-600 dark:text-gray-400 text-xs font-medium">Score Écologique</p>
-<p class="text-gray-900 dark:text-white tracking-light text-xl font-bold leading-tight">C+ | 65/100</p>
-</div>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<div class="text-right">
-<p class="text-gray-900 dark:text-white font-semibold">Année 1 - Septembre</p>
-</div>
-<div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
-<button class="p-2 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
-<span class="material-symbols-outlined">play_arrow</span>
-</button>
-<button class="p-2 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
-<span class="material-symbols-outlined">pause</span>
-</button>
-<button class="p-2 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
-<span class="material-symbols-outlined">fast_forward</span>
-</button>
-</div>
-</div>
-</header>
-<div class="flex-1 overflow-y-auto p-8 flex flex-col items-center">
-<div class="w-full max-w-5xl bg-white dark:bg-[#152e19] rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 p-8">
-<h1 class="text-gray-900 dark:text-white tracking-light text-3xl font-bold leading-tight text-center">Décision Requise</h1>
-<p class="text-gray-600 dark:text-gray-300 text-base font-normal leading-normal text-center mt-2 max-w-3xl mx-auto">La rentrée approche et il est temps d'équiper l'école en matériel informatique. Chaque option aura un impact direct sur vos objectifs. Choisissez judicieusement.</p>
-<div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="flex flex-col border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:shadow-lg hover:border-primary/50 transition-all duration-300">
-<div class="p-6">
-<h3 class="text-xl font-bold text-gray-900 dark:text-white">Acheter 30 tablettes neuves</h3>
-<p class="text-sm text-gray-500 dark:text-gray-400 mt-2 h-16">Solution clé en main rapide à déployer, mais coûteuse et qui augmente votre dépendance aux grands constructeurs. L'impact écologique de la production de matériel neuf est considérable.</p>
-</div>
-<div class="border-t border-gray-200 dark:border-gray-700 p-6 space-y-3 text-sm">
-<div class="flex justify-between items-center">
-<span class="text-gray-600 dark:text-gray-400">Budget</span>
-<div class="flex items-center gap-2 font-semibold text-danger-dark">
-<span class="material-symbols-outlined text-base">arrow_downward</span>
-<span>- 20 000 €</span>
-</div>
-</div>
-<div class="flex justify-between items-center">
-<span class="text-gray-600 dark:text-gray-400">Autonomie</span>
-<div class="flex items-center gap-2 font-semibold text-danger-dark">
-<span class="material-symbols-outlined text-base">arrow_downward</span>
-<span>- 10 %</span>
-</div>
-</div>
-<div class="flex justify-between items-center">
-<span class="text-gray-600 dark:text-gray-400">Écologie</span>
-<div class="flex items-center gap-2 font-semibold text-danger-dark">
-<span class="material-symbols-outlined text-base">arrow_downward</span>
-<span>- 15 pts</span>
-</div>
-</div>
-</div>
-<div class="p-6 mt-auto">
-<button class="w-full bg-primary text-black font-bold py-3 px-4 rounded-lg hover:bg-opacity-80 transition-colors">
-                                Choisir cette option
-                            </button>
-</div>
-</div>
-<div class="flex flex-col border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:shadow-lg hover:border-primary/50 transition-all duration-300">
-<div class="p-6">
-<h3 class="text-xl font-bold text-gray-900 dark:text-white">Récupérer 25 vieux PC et installer Linux</h3>
-<p class="text-sm text-gray-500 dark:text-gray-400 mt-2 h-16">Option très économique et écologique, favorisant l'autonomie grâce à l'open-source. Cependant, elle demande un investissement en temps pour la formation du personnel et des élèves.</p>
-</div>
-<div class="border-t border-gray-200 dark:border-gray-700 p-6 space-y-3 text-sm">
-<div class="flex justify-between items-center">
-<span class="text-gray-600 dark:text-gray-400">Budget</span>
-<div class="flex items-center gap-2 font-semibold text-success-dark">
-<span class="material-symbols-outlined text-base">horizontal_rule</span>
-<span>0 €</span>
-</div>
-</div>
-<div class="flex justify-between items-center">
-<span class="text-gray-600 dark:text-gray-400">Autonomie</span>
-<div class="flex items-center gap-2 font-semibold text-success-dark">
-<span class="material-symbols-outlined text-base">arrow_upward</span>
-<span>+ 20 %</span>
-</div>
-</div>
-<div class="flex justify-between items-center">
-<span class="text-gray-600 dark:text-gray-400">Écologie</span>
-<div class="flex items-center gap-2 font-semibold text-success-dark">
-<span class="material-symbols-outlined text-base">arrow_upward</span>
-<span>+ 25 pts</span>
-</div>
-</div>
-<div class="flex justify-between items-center mt-2 pt-2 border-t border-dashed border-gray-300 dark:border-gray-600">
-<span class="text-gray-600 dark:text-gray-400">Effet additionnel</span>
-<div class="flex items-center gap-2 font-semibold text-warning-dark">
-<span class="material-symbols-outlined text-base">schedule</span>
-<span>Nécessite formation</span>
-</div>
-</div>
-</div>
-<div class="p-6 mt-auto">
-<button class="w-full bg-primary text-black font-bold py-3 px-4 rounded-lg hover:bg-opacity-80 transition-colors">
-                                Choisir cette option
-                            </button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
-</div>
+<html class="dark" lang="fr">
 
-</body></html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Écran des Décisions</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13ec37",
+            "background-light": "#f6f8f6",
+            "background-dark": "#102213",
+            "success": { "DEFAULT": "#13ec37", "dark": "#10b981", "light": "#d1fae5" },
+            "danger": { "DEFAULT": "#ef4444", "dark": "#f87171", "light": "#fee2e2" },
+            "warning": { "DEFAULT": "#f59e0b", "dark": "#fbbf24", "light": "#fef3c7" },
+          },
+          fontFamily: {
+            "display": ["Lexend", "sans-serif"]
+          },
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+  <div class="flex h-screen w-full">
+    <aside
+      class="flex w-64 flex-col bg-background-light dark:bg-background-dark border-r border-gray-200 dark:border-gray-800 p-4">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+            data-alt="School logo with a digital theme"
+            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAMOs-ClyjS6WTQsBzOZu91yPuAEdQnYJkLFfaNHDtlHRDDw2jS2iUWfd7j0vvdY99M3SCUlsTBFKOHidltSkKmKz13m3G-bj8GbQL16uAXUfdxnmlM1DMOsG2E2SRqhtY-yHu0hk6SGqWvtKOBRk6lQCtPRMsMQvNh3lNR07zHQnzcBfFT1SBFpl8bG_XnaeV7i36dux80md48PPYulzkwOBVg_NiKdZ0B15IiCuow_3ec8iubWnaJQHfkz5wUcn5tw83rcEJp5H1-");'>
+          </div>
+          <div class="flex flex-col">
+            <h1 class="text-gray-900 dark:text-white text-base font-medium leading-normal">Lycée Numérique</h1>
+            <p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Tableau de Bord</p>
+          </div>
+        </div>
+        <nav class="flex flex-col gap-2 mt-4">
+          <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+            href="#">
+            <span class="material-symbols-outlined text-2xl">domain</span>
+            <p class="text-sm font-medium leading-normal">Départements</p>
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2 text-gray-900 dark:text-white rounded-lg bg-primary/20 dark:bg-primary/20"
+            href="#">
+            <span class="material-symbols-outlined text-2xl !font-bold">router</span>
+            <p class="text-sm font-medium leading-normal">Infrastructure Réseau</p>
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+            href="#">
+            <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+            <p class="text-sm font-medium leading-normal">Achats de Matériel</p>
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+            href="#">
+            <span class="material-symbols-outlined text-2xl">groups</span>
+            <p class="text-sm font-medium leading-normal">Personnel</p>
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+            href="#">
+            <span class="material-symbols-outlined text-2xl">science</span>
+            <p class="text-sm font-medium leading-normal">R&amp;D</p>
+          </a>
+        </nav>
+      </div>
+      <div class="mt-auto">
+      </div>
+    </aside>
+    <main class="flex-1 flex flex-col h-screen">
+      <header
+        class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark">
+        <div class="flex flex-wrap gap-4">
+          <div class="flex items-center gap-3 min-w-[158px] rounded-lg p-3 border border-gray-200 dark:border-gray-800">
+            <span class="material-symbols-outlined text-primary text-3xl">account_balance_wallet</span>
+            <div>
+              <p class="text-gray-600 dark:text-gray-400 text-xs font-medium">Budget</p>
+              <p class="text-gray-900 dark:text-white tracking-light text-xl font-bold leading-tight">€ 50,000</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 min-w-[158px] rounded-lg p-3 border border-gray-200 dark:border-gray-800">
+            <span class="material-symbols-outlined text-primary text-3xl">model_training</span>
+            <div>
+              <p class="text-gray-600 dark:text-gray-400 text-xs font-medium">Autonomie Numérique</p>
+              <p class="text-gray-900 dark:text-white tracking-light text-xl font-bold leading-tight">15%</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 min-w-[158px] rounded-lg p-3 border border-gray-200 dark:border-gray-800">
+            <span class="material-symbols-outlined text-primary text-3xl">eco</span>
+            <div>
+              <p class="text-gray-600 dark:text-gray-400 text-xs font-medium">Score Écologique</p>
+              <p class="text-gray-900 dark:text-white tracking-light text-xl font-bold leading-tight">C+ | 65/100</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-right">
+            <p class="text-gray-900 dark:text-white font-semibold">Année 1 - Septembre</p>
+          </div>
+          <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+            <button class="p-2 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
+              <span class="material-symbols-outlined">play_arrow</span>
+            </button>
+            <button class="p-2 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
+              <span class="material-symbols-outlined">pause</span>
+            </button>
+            <button class="p-2 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
+              <span class="material-symbols-outlined">fast_forward</span>
+            </button>
+          </div>
+        </div>
+      </header>
+      <div class="flex-1 overflow-y-auto p-8 flex flex-col items-center">
+        <div
+          class="w-full max-w-5xl bg-white dark:bg-[#152e19] rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 p-8">
+          <h1 class="text-gray-900 dark:text-white tracking-light text-3xl font-bold leading-tight text-center">Décision
+            Requise</h1>
+          <p
+            class="text-gray-600 dark:text-gray-300 text-base font-normal leading-normal text-center mt-2 max-w-3xl mx-auto">
+            La rentrée approche et il est temps d'équiper l'école en matériel informatique. Chaque option aura un impact
+            direct sur vos objectifs. Choisissez judicieusement.</p>
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div
+              class="flex flex-col border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:shadow-lg hover:border-primary/50 transition-all duration-300">
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Acheter 30 tablettes neuves</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 h-16">Solution clé en main rapide à déployer,
+                  mais coûteuse et qui augmente votre dépendance aux grands constructeurs. L'impact écologique de la
+                  production de matériel neuf est considérable.</p>
+              </div>
+              <div class="border-t border-gray-200 dark:border-gray-700 p-6 space-y-3 text-sm">
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600 dark:text-gray-400">Budget</span>
+                  <div class="flex items-center gap-2 font-semibold text-danger-dark">
+                    <span class="material-symbols-outlined text-base">arrow_downward</span>
+                    <span>- 20 000 €</span>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600 dark:text-gray-400">Autonomie</span>
+                  <div class="flex items-center gap-2 font-semibold text-danger-dark">
+                    <span class="material-symbols-outlined text-base">arrow_downward</span>
+                    <span>- 10 %</span>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600 dark:text-gray-400">Écologie</span>
+                  <div class="flex items-center gap-2 font-semibold text-danger-dark">
+                    <span class="material-symbols-outlined text-base">arrow_downward</span>
+                    <span>- 15 pts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="p-6 mt-auto">
+                <button
+                  class="w-full bg-primary text-black font-bold py-3 px-4 rounded-lg hover:bg-opacity-80 transition-colors">
+                  Choisir cette option
+                </button>
+              </div>
+            </div>
+            <div
+              class="flex flex-col border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:shadow-lg hover:border-primary/50 transition-all duration-300">
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Récupérer 25 vieux PC et installer Linux
+                </h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 h-16">Option très économique et écologique,
+                  favorisant l'autonomie grâce à l'open-source. Cependant, elle demande un investissement en temps pour
+                  la formation du personnel et des élèves.</p>
+              </div>
+              <div class="border-t border-gray-200 dark:border-gray-700 p-6 space-y-3 text-sm">
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600 dark:text-gray-400">Budget</span>
+                  <div class="flex items-center gap-2 font-semibold text-success-dark">
+                    <span class="material-symbols-outlined text-base">horizontal_rule</span>
+                    <span>0 €</span>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600 dark:text-gray-400">Autonomie</span>
+                  <div class="flex items-center gap-2 font-semibold text-success-dark">
+                    <span class="material-symbols-outlined text-base">arrow_upward</span>
+                    <span>+ 20 %</span>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600 dark:text-gray-400">Écologie</span>
+                  <div class="flex items-center gap-2 font-semibold text-success-dark">
+                    <span class="material-symbols-outlined text-base">arrow_upward</span>
+                    <span>+ 25 pts</span>
+                  </div>
+                </div>
+                <div
+                  class="flex justify-between items-center mt-2 pt-2 border-t border-dashed border-gray-300 dark:border-gray-600">
+                  <span class="text-gray-600 dark:text-gray-400">Effet additionnel</span>
+                  <div class="flex items-center gap-2 font-semibold text-warning-dark">
+                    <span class="material-symbols-outlined text-base">schedule</span>
+                    <span>Nécessite formation</span>
+                  </div>
+                </div>
+              </div>
+              <div class="p-6 mt-auto">
+                <button
+                  class="w-full bg-primary text-black font-bold py-3 px-4 rounded-lg hover:bg-opacity-80 transition-colors">
+                  Choisir cette option
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+</body>
+
+</html>
