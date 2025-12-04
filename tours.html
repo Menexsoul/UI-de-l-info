@@ -45,13 +45,13 @@ const tours = {
             {
                 txt: "Acheter 30 tablettes neuves",
                 effet: () => { var1 -= 20; var2 -= 10; var3 -= 15; },
-                stats: { budget: -20, auto: -10, eco: -15 },
+                stats: { budget: -20, autonomie: -10, ecologie: -15 },
                 pourcentage: 62
             },
             {
                 txt: "Réinstaller Linux sur d'anciens PC",
                 effet: () => { var2 += 20; var3 += 25; },
-                stats: { budget: 0, auto: +20, eco: +25 },
+                stats: { budget: 0, autonomie: +20, ecologie: +25 },
                 pourcentage: 38
             }
         ]
@@ -64,13 +64,13 @@ const tours = {
             {
                 txt: "Formation obligatoire",
                 effet: () => { var2 += 10; var1 -= 5; },
-                stats: { budget: -5, auto: +10, eco: 0 },
+                stats: { budget: -5, autonomie: +10, ecologie: 0 },
                 pourcentage: 51
             },
             {
                 txt: "Formation facultative",
                 effet: () => { var2 += 3; },
-                stats: { budget: 0, auto: +3, eco: 0 },
+                stats: { budget: 0, autonomie: +3, ecologie: 0 },
                 pourcentage: 49
             }
         ]
