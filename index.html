@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-
 <html class="dark" lang="fr">
 
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Tableau de bord principal</title>
+  <title>Décisions (NIRD/Obsolescence/Big Tech)</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+  <script src="data.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
     rel="stylesheet" />
   <script id="tailwind-config">
     tailwind.config = {
@@ -18,14 +16,25 @@
       theme: {
         extend: {
           colors: {
-            "primary": "#13ec37",
-            "background-light": "#f6f8f6",
-            "background-dark": "#102213",
+            "primary": "#c81e1e",
+            "secondary": "#166534",
+            "terminal-bg": "#121212",
+            "terminal-border": "#333333",
+            "neon-red": "#ff3333",
+            "neon-green": "#00ff66",
+            "text-light": "#e0e0e0",
+            "text-dark": "#a0a0a0",
+            "success": "#00ff66",
+            "danger": "#ff3333",
+            "warning": "#ffff00",
           },
           fontFamily: {
-            "display": ["Lexend", "sans-serif"]
+            "mono": ["'Roboto Mono'", "monospace"],
           },
-          borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+          boxShadow: {
+            'glitch-red': '3px 3px 0px 0px #ff3333, -3px -3px 0px 0px #333333',
+            'glitch-green': '3px 3px 0px 0px #00ff66, -3px -3px 0px 0px #333333',
+          },
         },
       },
     }
@@ -35,360 +44,136 @@
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
       vertical-align: middle;
     }
+
+    .glitch-border {
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+    }
+
+    .text-shadow-neon {
+      text-shadow: 0 0 5px currentColor;
+    }
+
+    /* Animation simple pour le changement de tour */
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+<body class="bg-black font-mono text-text-light">
   <div class="flex h-screen w-full">
-    <!-- SideNavBar -->
-    <aside
-      class="flex w-64 flex-col bg-background-light dark:bg-background-dark border-r border-gray-200 dark:border-gray-800 p-4">
+    <aside class="flex w-64 flex-col bg-black border-r border-terminal-border p-4 hidden md:flex">
       <div class="flex flex-col gap-4">
         <div class="flex items-center gap-3">
-          <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-            data-alt="School logo with a digital theme"
-            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAMOs-ClyjS6WTQsBzOZu91yPuAEdQnYJkLFfaNHDtlHRDDw2jS2iUWfd7j0vvdY99M3SCUlsTBFKOHidltSkKmKz13m3G-bj8GbQL16uAXUfdxnmlM1DMOsG2E2SRqhtY-yHu0hk6SGqWvtKOBRk6lQCtPRMsMQvNh3lNR07zHQnzcBfFT1SBFpl8bG_XnaeV7i36dux80md48PPYulzkwOBVg_NiKdZ0B15IiCuow_3ec8iubWnaJQHfkz5wUcn5tw83rcEJp5H1-");'>
-          </div>
+          <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-terminal-border"
+            style='background-image: url("https://ui-avatars.com/api/?name=LN&background=0D8ABC&color=fff");'></div>
           <div class="flex flex-col">
-            <h1 class="text-gray-900 dark:text-white text-base font-medium leading-normal">Lycée Numérique</h1>
-            <p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Tableau de Bord</p>
+            <h1 class="text-white text-base font-medium leading-normal">Lycée Numérique</h1>
+            <p class="text-text-dark text-sm font-normal leading-normal">// Tableau de Bord</p>
           </div>
         </div>
         <nav class="flex flex-col gap-2 mt-4">
-          <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
-            href="#">
-            <span class="material-symbols-outlined text-2xl">domain</span>
-            <p class="text-sm font-medium leading-normal">Départements</p>
+          <a class="flex items-center gap-3 px-3 py-2 text-text-dark hover:bg-terminal-border hover:text-white rounded"
+            href="#"><span class="material-symbols-outlined text-2xl">domain</span>
+            <p class="text-sm font-medium">Départements</p>
           </a>
-          <a class="flex items-center gap-3 px-3 py-2 text-gray-900 dark:text-white rounded-lg bg-primary/20 dark:bg-primary/20"
-            href="#">
-            <span class="material-symbols-outlined text-2xl !font-bold">router</span>
-            <p class="text-sm font-medium leading-normal">Infrastructure Réseau</p>
+          <a class="flex items-center gap-3 px-3 py-2 text-neon-green bg-neon-green/10 border border-neon-green/50 rounded"
+            href="#"><span class="material-symbols-outlined text-2xl !font-bold">router</span>
+            <p class="text-sm font-medium">Infrastructure</p>
           </a>
-          <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
-            href="#">
-            <span class="material-symbols-outlined text-2xl">shopping_cart</span>
-            <p class="text-sm font-medium leading-normal">Achats de Matériel</p>
-          </a>
-          <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
-            href="#">
-            <span class="material-symbols-outlined text-2xl">groups</span>
-            <p class="text-sm font-medium leading-normal">Personnel</p>
-          </a>
-          <a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
-            href="#">
-            <span class="material-symbols-outlined text-2xl">science</span>
-            <p class="text-sm font-medium leading-normal">R&amp;D</p>
+          <a class="flex items-center gap-3 px-3 py-2 text-text-dark hover:bg-terminal-border hover:text-white rounded"
+            href="#"><span class="material-symbols-outlined text-2xl">shopping_cart</span>
+            <p class="text-sm font-medium">Achats</p>
           </a>
         </nav>
       </div>
-      <div class="mt-auto">
-        <!-- Spacer -->
-      </div>
     </aside>
-    <!-- Main Content -->
+
     <main class="flex-1 flex flex-col h-screen">
-      <!-- Header Bar -->
-      <header
-        class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark">
-        <!-- Stats -->
+      <header class="flex items-center justify-between p-4 border-b border-terminal-border bg-black">
         <div class="flex flex-wrap gap-4">
-          <div class="flex items-center gap-3 min-w-[158px] rounded-lg p-3 border border-gray-200 dark:border-gray-800">
-            <span class="material-symbols-outlined text-primary text-3xl">account_balance_wallet</span>
+          <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
+            <span class="material-symbols-outlined text-neon-green text-3xl">account_balance_wallet</span>
             <div>
-              <p class="text-gray-600 dark:text-gray-400 text-xs font-medium">Budget</p>
-              <p class="text-gray-900 dark:text-white tracking-light text-xl font-bold leading-tight">€ 50,000</p>
+              <p class="text-text-dark text-xs font-medium">Budget</p>
+              <p id="header-budget" class="text-white tracking-light text-xl font-bold leading-tight">€ 50,000</p>
             </div>
           </div>
-          <div class="flex items-center gap-3 min-w-[158px] rounded-lg p-3 border border-gray-200 dark:border-gray-800">
-            <span class="material-symbols-outlined text-primary text-3xl">model_training</span>
+          <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
+            <span class="material-symbols-outlined text-neon-green text-3xl">model_training</span>
             <div>
-              <p class="text-gray-600 dark:text-gray-400 text-xs font-medium">Autonomie Numérique</p>
-              <p class="text-gray-900 dark:text-white tracking-light text-xl font-bold leading-tight">15%</p>
+              <p class="text-text-dark text-xs font-medium">Autonomie Num.</p>
+              <p id="header-autonomy" class="text-white tracking-light text-xl font-bold leading-tight">15%</p>
             </div>
           </div>
-          <div class="flex items-center gap-3 min-w-[158px] rounded-lg p-3 border border-gray-200 dark:border-gray-800">
-            <span class="material-symbols-outlined text-primary text-3xl">eco</span>
+          <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
+            <span class="material-symbols-outlined text-neon-green text-3xl">eco</span>
             <div>
-              <p class="text-gray-600 dark:text-gray-400 text-xs font-medium">Score Écologique</p>
-              <p class="text-gray-900 dark:text-white tracking-light text-xl font-bold leading-tight">C+ | 65/100</p>
+              <p class="text-text-dark text-xs font-medium">Score Éco.</p>
+              <p id="header-eco" class="text-white tracking-light text-xl font-bold leading-tight">65/100</p>
             </div>
           </div>
         </div>
-        <!-- ToolBar -->
         <div class="flex items-center gap-4">
           <div class="text-right">
-            <p class="text-gray-900 dark:text-white font-semibold">Année 1 - Septembre</p>
-          </div>
-          <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
-            <button class="p-2 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
-              <span class="material-symbols-outlined">play_arrow</span>
-            </button>
-            <button class="p-2 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
-              <span class="material-symbols-outlined">pause</span>
-            </button>
-            <button class="p-2 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
-              <span class="material-symbols-outlined">fast_forward</span>
-            </button>
+            <p id="header-turn" class="text-white font-semibold">Année 1 - Trimestre 1</p>
           </div>
         </div>
       </header>
-      <!-- Event Area -->
-      <div class="flex-1 overflow-y-auto p-8 flex flex-col items-center justify-center">
+
+      <div
+        class="flex-1 overflow-y-auto p-8 flex flex-col items-center bg-black bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
         <div
-          class="w-full max-w-4xl bg-white dark:bg-[#152e19] rounded-xl shadow-lg border border-gray-200 dark:border-gray-800">
-          <!-- HeadlineText -->
-          <h1
-            class="text-gray-900 dark:text-white tracking-light text-2xl font-bold leading-tight px-8 text-left pb-2 pt-6">
-            Plan d'équipement numérique de début d'année</h1>
-          <!-- BodyText -->
-          <p class="text-gray-600 dark:text-gray-300 text-base font-normal leading-normal pb-6 pt-1 px-8">Les
-            professeurs demandent de nouveaux ordinateurs pour la rentrée. Plusieurs options s'offrent à vous, chacune
-            avec des conséquences importantes sur votre budget, votre indépendance technologique et votre impact
-            environnemental.</p>
-          <!-- Choice Options -->
-          <div class="p-8 pt-0 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Option 1 -->
-            <div
-              class="flex flex-col border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50 hover:border-primary/50 dark:hover:border-primary/50 transition-all">
-              <h3 class="font-bold text-gray-900 dark:text-white">Partenariat GAFAM</h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-3 flex-grow">Coût faible, autonomie faible,
-                impact écologique négatif. Une solution rapide mais qui augmente votre dépendance.</p>
-              <button
-                class="w-full bg-primary/20 text-primary-800 dark:text-primary font-semibold py-2 px-4 rounded-lg hover:bg-primary/30 transition-colors">
-                Choisir
-              </button>
-            </div>
-            <!-- Option 2 -->
-            <div
-              class="flex flex-col border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50 hover:border-primary/50 dark:hover:border-primary/50 transition-all">
-              <h3 class="font-bold text-gray-900 dark:text-white">Achat Reconditionné</h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-3 flex-grow">Coût moyen, autonomie moyenne,
-                impact écologique positif. Un compromis équilibré pour commencer.</p>
-              <button
-                class="w-full bg-primary/20 text-primary-800 dark:text-primary font-semibold py-2 px-4 rounded-lg hover:bg-primary/30 transition-colors">
-                Choisir
-              </button>
-            </div>
-            <!-- Option 3 -->
-            <div
-              class="flex flex-col border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50 hover:border-primary/50 dark:hover:border-primary/50 transition-all">
-              <h3 class="font-bold text-gray-900 dark:text-white">Solution Open Source</h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-3 flex-grow">Coût élevé, autonomie forte,
-                impact écologique neutre. Un investissement pour l'avenir et l'indépendance.</p>
-              <button
-                class="w-full bg-primary/20 text-primary-800 dark:text-primary font-semibold py-2 px-4 rounded-lg hover:bg-primary/30 transition-colors">
-                Choisir
-              </button>
-            </div>
+          class="w-full max-w-6xl bg-terminal-bg/80 backdrop-blur-sm border-2 border-terminal-border p-8 glitch-border fade-in">
+
+          <h1 id="scenario-title"
+            class="text-white tracking-light text-3xl md:text-4xl font-bold leading-tight text-center">CHARGEMENT...
+          </h1>
+          <p id="scenario-desc"
+            class="text-text-dark text-base font-normal leading-normal text-center mt-4 max-w-3xl mx-auto"></p>
+
+          <div id="feedback-area"
+            class="hidden mt-4 p-3 bg-white/10 border border-white/20 text-center text-white rounded"></div>
+
+          <div id="choices-container" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
           </div>
         </div>
       </div>
     </main>
   </div>
-</body>
 
-=======
-<html class="dark" lang="fr">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Décisions (NIRD/Obsolescence/Big Tech)</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#c81e1e",
-                        "secondary": "#166534",
-                        "terminal-bg": "#121212",
-                        "terminal-border": "#333333",
-                        "neon-red": "#ff3333",
-                        "neon-green": "#00ff66",
-                        "text-light": "#e0e0e0",
-                        "text-dark": "#a0a0a0",
-                        "success": "#00ff66",
-                        "danger": "#ff3333",
-                        "warning": "#ffff00",
-                    },
-                    fontFamily: {
-                        "mono": ["'Roboto Mono'", "monospace"],
-                    },
-                    boxShadow: {
-                        'glitch-red': '3px 3px 0px 0px #ff3333, -3px -3px 0px 0px #333333',
-                        'glitch-green': '3px 3px 0px 0px #00ff66, -3px -3px 0px 0px #333333',
-                    },
-                },
-            },
-        }
-    </script>
-    <style>
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-        .glitch-border { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
-        .text-shadow-neon { text-shadow: 0 0 5px currentColor; }
-        /* Animation simple pour le changement de tour */
-        .fade-in { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body class="bg-black font-mono text-text-light">
-<div class="flex h-screen w-full">
-    <aside class="flex w-64 flex-col bg-black border-r border-terminal-border p-4 hidden md:flex">
-        <div class="flex flex-col gap-4">
-            <div class="flex items-center gap-3">
-                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-terminal-border" style='background-image: url("https://ui-avatars.com/api/?name=LN&background=0D8ABC&color=fff");'></div>
-                <div class="flex flex-col">
-                    <h1 class="text-white text-base font-medium leading-normal">Lycée Numérique</h1>
-                    <p class="text-text-dark text-sm font-normal leading-normal">// Tableau de Bord</p>
-                </div>
-            </div>
-            <nav class="flex flex-col gap-2 mt-4">
-                <a class="flex items-center gap-3 px-3 py-2 text-text-dark hover:bg-terminal-border hover:text-white rounded" href="#"><span class="material-symbols-outlined text-2xl">domain</span><p class="text-sm font-medium">Départements</p></a>
-                <a class="flex items-center gap-3 px-3 py-2 text-neon-green bg-neon-green/10 border border-neon-green/50 rounded" href="#"><span class="material-symbols-outlined text-2xl !font-bold">router</span><p class="text-sm font-medium">Infrastructure</p></a>
-                <a class="flex items-center gap-3 px-3 py-2 text-text-dark hover:bg-terminal-border hover:text-white rounded" href="#"><span class="material-symbols-outlined text-2xl">shopping_cart</span><p class="text-sm font-medium">Achats</p></a>
-            </nav>
-        </div>
-    </aside>
-
-    <main class="flex-1 flex flex-col h-screen">
-        <header class="flex items-center justify-between p-4 border-b border-terminal-border bg-black">
-            <div class="flex flex-wrap gap-4">
-                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
-                    <span class="material-symbols-outlined text-neon-green text-3xl">account_balance_wallet</span>
-                    <div>
-                        <p class="text-text-dark text-xs font-medium">Budget</p>
-                        <p id="header-budget" class="text-white tracking-light text-xl font-bold leading-tight">€ 50,000</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
-                    <span class="material-symbols-outlined text-neon-green text-3xl">model_training</span>
-                    <div>
-                        <p class="text-text-dark text-xs font-medium">Autonomie Num.</p>
-                        <p id="header-autonomy" class="text-white tracking-light text-xl font-bold leading-tight">15%</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 min-w-[158px] rounded p-3 border border-terminal-border">
-                    <span class="material-symbols-outlined text-neon-green text-3xl">eco</span>
-                    <div>
-                        <p class="text-text-dark text-xs font-medium">Score Éco.</p>
-                        <p id="header-eco" class="text-white tracking-light text-xl font-bold leading-tight">65/100</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right">
-                    <p id="header-turn" class="text-white font-semibold">Année 1 - Trimestre 1</p>
-                </div>
-            </div>
-        </header>
-
-        <div class="flex-1 overflow-y-auto p-8 flex flex-col items-center bg-black bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
-            <div class="w-full max-w-6xl bg-terminal-bg/80 backdrop-blur-sm border-2 border-terminal-border p-8 glitch-border fade-in">
-                
-                <h1 id="scenario-title" class="text-white tracking-light text-3xl md:text-4xl font-bold leading-tight text-center">CHARGEMENT...</h1>
-                <p id="scenario-desc" class="text-text-dark text-base font-normal leading-normal text-center mt-4 max-w-3xl mx-auto"></p>
-                
-                <div id="feedback-area" class="hidden mt-4 p-3 bg-white/10 border border-white/20 text-center text-white rounded"></div>
-
-                <div id="choices-container" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-                    </div>
-            </div>
-        </div>
-    </main>
-</div>
-
-<script>
+  <script>
     // --- VARIABLES D'ÉTAT ---
     let tour = 1;
     let budget = 50; // En milliers
     let autonomie = 15; // En %
     let ecologie = 65; // Sur 100
 
-    // --- DONNÉES DE JEU (Adaptées avec style) ---
-    const scenarios = {
-        1: {
-            title: "DECISION_REQ_01: RENTRÉE NUMÉRIQUE",
-            desc: "> [SYSTEM] Le parc informatique est vieillissant. Une mise à niveau est requise pour la rentrée. Deux protocoles s'offrent à l'administration.",
-            options: [
-                {
-                    type: "goliath", // Style Rouge/Danger
-                    title: "Option A: Achat Neuf",
-                    desc: "// ERROR: Achat de 30 tablettes propriétaires neuves. Solution clé en main mais coûteuse et fermée.",
-                    icon: "warning",
-                    stats_display: [
-                        { label: "Budget", val: "- 20 000 €", icon: "arrow_downward", color: "text-danger" },
-                        { label: "Autonomie", val: "- 10 %", icon: "arrow_downward", color: "text-danger" },
-                        { label: "Écologie", val: "- 15 pts", icon: "delete", color: "text-danger" }
-                    ],
-                    effect: () => { budget -= 20; autonomie -= 10; ecologie -= 15; },
-                    percent: 62
-                },
-                {
-                    type: "nird", // Style Vert/Success
-                    title: "Option B: Reconditionnement",
-                    desc: "// SUCCESS: Réinstallation de Linux sur les anciens PC. Coût nul, haute maintenabilité, nécessite du temps.",
-                    icon: "recycling",
-                    stats_display: [
-                        { label: "Budget", val: "0 €", icon: "horizontal_rule", color: "text-success" },
-                        { label: "Autonomie", val: "+ 20 %", icon: "arrow_upward", color: "text-success" },
-                        { label: "Écologie", val: "+ 25 pts", icon: "eco", color: "text-success" }
-                    ],
-                    effect: () => { autonomie += 20; ecologie += 25; },
-                    percent: 38
-                }
-            ]
-        },
-        2: {
-            title: "DECISION_REQ_02: COMPÉTENCE PERSONNEL",
-            desc: "> [SYSTEM] Le nouveau système d'exploitation libre déstabilise certains enseignants. Le taux de tickets support est en hausse de 300%.",
-            options: [
-                {
-                    type: "goliath",
-                    title: "Option A: Formation Obligatoire",
-                    desc: "// ALERT: Investissement lourd dans une formation certifiante externe. Efficace mais coûteux.",
-                    icon: "school",
-                    stats_display: [
-                        { label: "Budget", val: "- 5 000 €", icon: "arrow_downward", color: "text-danger" },
-                        { label: "Autonomie", val: "+ 10 %", icon: "arrow_upward", color: "text-success" },
-                        { label: "Moral", val: "Neutre", icon: "sentiment_neutral", color: "text-text-dark" }
-                    ],
-                    effect: () => { autonomie += 10; budget -= 5; },
-                    percent: 51
-                },
-                {
-                    type: "nird",
-                    title: "Option B: Entraide (Peer-to-Peer)",
-                    desc: "// INFO: Créer des ateliers où les élèves et profs experts forment les autres. Gratuit mais lent.",
-                    icon: "groups",
-                    stats_display: [
-                        { label: "Budget", val: "0 €", icon: "horizontal_rule", color: "text-success" },
-                        { label: "Autonomie", val: "+ 3 %", icon: "arrow_upward", color: "text-success" },
-                        { label: "Communauté", val: "++ Link", icon: "favorite", color: "text-warning" }
-                    ],
-                    effect: () => { autonomie += 3; },
-                    percent: 49
-                }
-            ]
-        }
-    };
-
     // --- MOTEUR DE JEU ---
 
     function updateHeader() {
-        // Mise à jour visuelle des scores
-        document.getElementById("header-budget").innerText = `€ ${budget},000`;
-        document.getElementById("header-autonomy").innerText = `${autonomie}%`;
-        document.getElementById("header-eco").innerText = `${ecologie}/100`;
-        document.getElementById("header-turn").innerText = `Tour ${tour}`;
+      // Mise à jour visuelle des scores
+      document.getElementById("header-budget").innerText = `€ ${budget},000`;
+      document.getElementById("header-autonomy").innerText = `${autonomie}%`;
+      document.getElementById("header-eco").innerText = `${ecologie}/100`;
+      document.getElementById("header-turn").innerText = `Tour ${tour}`;
     }
 
     function renderStatsLines(stats) {
-        // Génère le HTML pour les petites lignes de stats dans les cartes
-        return stats.map(s => `
+      // Génère le HTML pour les petites lignes de stats dans les cartes
+      return stats.map(s => `
             <div class="flex justify-between items-center">
                 <span class="text-text-dark">> ${s.label}:</span>
                 <div class="flex items-center gap-2 font-semibold ${s.color}">
@@ -400,34 +185,34 @@
     }
 
     function renderTour() {
-        const currentData = scenarios[tour];
-        const container = document.getElementById("choices-container");
-        
-        // Nettoyage
-        container.innerHTML = "";
-        
-        if (!currentData) {
-            // Fin de la partie
-            document.getElementById("scenario-title").innerText = "SIMULATION TERMINÉE";
-            document.getElementById("scenario-desc").innerText = `> [END] Résultat final : Budget ${budget}k€ | Autonomie ${autonomie}% | Écologie ${ecologie}/100.`;
-            container.innerHTML = `<button onclick="location.reload()" class="col-span-1 md:col-span-2 bg-white text-black p-4 font-bold hover:bg-gray-200">RELANCER LE SYSTÈME</button>`;
-            return;
-        }
+      const currentData = scenarios[tour];
+      const container = document.getElementById("choices-container");
 
-        // Mise à jour Textes
-        document.getElementById("scenario-title").innerText = currentData.title;
-        document.getElementById("scenario-desc").innerText = currentData.desc;
+      // Nettoyage
+      container.innerHTML = "";
 
-        // Génération des cartes
-        currentData.options.forEach((opt, index) => {
-            // Définition des styles selon le type (Goliath/Rouge ou NIRD/Vert)
-            const isGoliath = opt.type === "goliath";
-            const colorClass = isGoliath ? "neon-red" : "neon-green";
-            const shadowClass = isGoliath ? "shadow-glitch-red" : "shadow-glitch-green";
-            const btnBg = isGoliath ? "bg-neon-red/10 hover:bg-neon-red" : "bg-neon-green/10 hover:bg-neon-green";
-            const btnText = isGoliath ? "text-neon-red" : "text-neon-green";
+      if (!currentData) {
+        // Fin de la partie
+        document.getElementById("scenario-title").innerText = "SIMULATION TERMINÉE";
+        document.getElementById("scenario-desc").innerText = `> [END] Résultat final : Budget ${budget}k€ | Autonomie ${autonomie}% | Écologie ${ecologie}/100.`;
+        container.innerHTML = `<button onclick="location.reload()" class="col-span-1 md:col-span-2 bg-white text-black p-4 font-bold hover:bg-gray-200">RELANCER LE SYSTÈME</button>`;
+        return;
+      }
 
-            const cardHTML = `
+      // Mise à jour Textes
+      document.getElementById("scenario-title").innerText = currentData.title;
+      document.getElementById("scenario-desc").innerText = currentData.desc;
+
+      // Génération des cartes
+      currentData.options.forEach((opt, index) => {
+        // Définition des styles selon le type (Goliath/Rouge ou NIRD/Vert)
+        const isGoliath = opt.type === "goliath";
+        const colorClass = isGoliath ? "neon-red" : "neon-green";
+        const shadowClass = isGoliath ? "shadow-glitch-red" : "shadow-glitch-green";
+        const btnBg = isGoliath ? "bg-neon-red/10 hover:bg-neon-red" : "bg-neon-green/10 hover:bg-neon-green";
+        const btnText = isGoliath ? "text-neon-red" : "text-neon-green";
+
+        const cardHTML = `
             <div class="flex flex-col bg-black/50 border-2 border-${colorClass} ${shadowClass} glitch-border transition-all duration-300 hover:scale-[1.01]">
                 <div class="p-6 relative">
                     <span class="material-symbols-outlined text-4xl text-${colorClass} absolute top-4 right-4">${opt.icon}</span>
@@ -446,40 +231,40 @@
                 </div>
             </div>
             `;
-            container.innerHTML += cardHTML;
-        });
+        container.innerHTML += cardHTML;
+      });
 
-        updateHeader();
+      updateHeader();
     }
 
     function choisir(index) {
-        const currentScenario = scenarios[tour];
-        const choice = currentScenario.options[index];
+      const currentScenario = scenarios[tour];
+      const choice = currentScenario.options[index];
 
-        // 1. Appliquer les effets
-        choice.effect();
+      // 1. Appliquer les effets
+      choice.effect();
 
-        // 2. Feedback visuel
-        const feedback = document.getElementById("feedback-area");
-        feedback.innerHTML = `> ACTION ENREGISTRÉE : ${choice.title}<br><span class="text-text-dark text-xs">Choisi par ${choice.percent}% des autres établissements.</span>`;
-        feedback.classList.remove("hidden");
+      // 2. Feedback visuel
+      const feedback = document.getElementById("feedback-area");
+      feedback.innerHTML = `> ACTION ENREGISTRÉE : ${choice.title}<br><span class="text-text-dark text-xs">Choisi par ${choice.percent}% des autres établissements.</span>`;
+      feedback.classList.remove("hidden");
 
-        // 3. Tour suivant
-        tour++;
-        updateHeader();
+      // 3. Tour suivant
+      tour++;
+      updateHeader();
 
-        // Petit délai pour l'immersion
-        setTimeout(() => {
-            renderTour();
-            // Cacher le feedback après transition
-            // feedback.classList.add("hidden"); 
-        }, 800);
+      // Petit délai pour l'immersion
+      setTimeout(() => {
+        renderTour();
+        // Cacher le feedback après transition
+        // feedback.classList.add("hidden"); 
+      }, 800);
     }
 
     // Initialisation
     renderTour();
 
-</script>
+  </script>
 </body>
->>>>>>> 91a5190c80d35127f57f9869cecf5497acc1e8f0
+
 </html>
