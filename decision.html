@@ -303,6 +303,23 @@
                     <span class="material-symbols-outlined text-lg text-neon-green">check_circle</span>
                     <span class="text-xs">Serveur NIRD: ON</span>
                 </div>
+                
+                <!-- VISUALISEUR AUDIO -->
+                <div class="mt-6 mx-3 p-3 border border-neon-blue/30 bg-neon-blue/5 rounded">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-xs text-neon-blue font-bold">AUDIO SPECTRUM</div>
+                        <div class="flex gap-2">
+                            <button id="mic-toggle" onclick="toggleMic()" class="text-xs text-text-dark hover:text-neon-blue flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">mic</span>
+                            </button>
+                            <button id="system-toggle" onclick="toggleSystemAudio()" class="text-xs text-text-dark hover:text-neon-blue flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">volume_up</span>
+                            </button>
+                        </div>
+                    </div>
+                    <canvas id="audio-visualizer" width="200" height="100" class="w-full bg-black/50 rounded"></canvas>
+                    <div class="text-xs text-text-dark mt-2 text-center" id="audio-info">Cliquez sur les icônes pour activer</div>
+                </div>
             </nav>
         </div>
     </aside>
@@ -602,6 +619,211 @@
 
     // Initialisation
     renderTour();
+
+    // --- VISUALISEUR AUDIO ---
+    let audioContext = null;
+    let analyser = null;
+    let microphone = null;
+    let systemAudio = null;
+    let dataArray = null;
+    let bufferLength = 0;
+    let isMicActive = false;
+    let isSystemActive = false;
+    const canvas = document.getElementById('audio-visualizer');
+    const canvasCtx = canvas.getContext('2d');
+
+    // Demander les autorisations automatiquement au chargement
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            // Demander automatiquement l'accès au micro
+            startMic();
+        }, 500);
+    });
+
+    async function startMic() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true
+                }
+            });
+            
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+            }
+            
+            microphone = audioContext.createMediaStreamSource(stream);
+            microphone.connect(analyser);
+            
+            isMicActive = true;
+            document.getElementById('mic-toggle').classList.add('text-neon-green');
+            document.getElementById('mic-toggle').classList.remove('text-text-dark');
+            
+            updateAudioInfo();
+            draw();
+        } catch (err) {
+            console.error('Erreur microphone:', err);
+            if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                document.getElementById('audio-info').textContent = 'Micro : autorisation refusée';
+            } else if (err.name === 'NotFoundError') {
+                document.getElementById('audio-info').textContent = 'Aucun micro détecté';
+            } else {
+                document.getElementById('audio-info').textContent = 'Erreur micro';
+            }
+        }
+    }
+
+    async function startSystemAudio() {
+        try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({ 
+                video: true,
+                audio: {
+                    echoCancellation: false,
+                    noiseSuppression: false,
+                    autoGainControl: false
+                }
+            });
+            
+            // Arrêter la vidéo immédiatement (on ne veut que l'audio)
+            stream.getVideoTracks().forEach(track => track.stop());
+            
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+            }
+            
+            const audioTracks = stream.getAudioTracks();
+            if (audioTracks.length > 0) {
+                systemAudio = audioContext.createMediaStreamSource(stream);
+                systemAudio.connect(analyser);
+                
+                isSystemActive = true;
+                document.getElementById('system-toggle').classList.add('text-neon-green');
+                document.getElementById('system-toggle').classList.remove('text-text-dark');
+                
+                updateAudioInfo();
+                draw();
+            } else {
+                document.getElementById('audio-info').textContent = 'Aucun audio système partagé';
+            }
+        } catch (err) {
+            console.error('Erreur audio système:', err);
+            if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                document.getElementById('audio-info').textContent = 'Partage audio refusé';
+            } else {
+                document.getElementById('audio-info').textContent = 'Erreur audio système';
+            }
+        }
+    }
+
+    function toggleMic() {
+        if (isMicActive) {
+            stopMic();
+        } else {
+            startMic();
+        }
+    }
+
+    function toggleSystemAudio() {
+        if (isSystemActive) {
+            stopSystemAudio();
+        } else {
+            startSystemAudio();
+        }
+    }
+
+    function stopMic() {
+        if (microphone) {
+            microphone.disconnect();
+            microphone = null;
+        }
+        isMicActive = false;
+        document.getElementById('mic-toggle').classList.remove('text-neon-green');
+        document.getElementById('mic-toggle').classList.add('text-text-dark');
+        updateAudioInfo();
+        checkIfShouldStop();
+    }
+
+    function stopSystemAudio() {
+        if (systemAudio) {
+            systemAudio.disconnect();
+            systemAudio = null;
+        }
+        isSystemActive = false;
+        document.getElementById('system-toggle').classList.remove('text-neon-green');
+        document.getElementById('system-toggle').classList.add('text-text-dark');
+        updateAudioInfo();
+        checkIfShouldStop();
+    }
+
+    function checkIfShouldStop() {
+        if (!isMicActive && !isSystemActive) {
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+                analyser = null;
+            }
+            // Effacer le canvas
+            canvasCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    function updateAudioInfo() {
+        const info = document.getElementById('audio-info');
+        if (isMicActive && isSystemActive) {
+            info.textContent = 'Micro + Système actifs';
+        } else if (isMicActive) {
+            info.textContent = 'Micro actif';
+        } else if (isSystemActive) {
+            info.textContent = 'Système actif';
+        } else {
+            info.textContent = 'Audio désactivé';
+        }
+    }
+
+    function draw() {
+        if (!isMicActive && !isSystemActive) return;
+        
+        requestAnimationFrame(draw);
+        
+        analyser.getByteFrequencyData(dataArray);
+        
+        // Fond avec effet de traînée
+        canvasCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        const barWidth = (canvas.width / bufferLength) * 2.5;
+        let barHeight;
+        let x = 0;
+        
+        for (let i = 0; i < bufferLength; i++) {
+            barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
+            
+            // Gradient de couleur selon la fréquence
+            const hue = (i / bufferLength) * 180 + 180; // De cyan à vert
+            canvasCtx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+            
+            // Dessiner la barre depuis le bas
+            canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+            
+            // Effet de reflet en haut
+            canvasCtx.globalAlpha = 0.3;
+            canvasCtx.fillRect(x, 0, barWidth, barHeight * 0.3);
+            canvasCtx.globalAlpha = 1.0;
+            
+            x += barWidth + 1;
+        }
+    }
 </script>
 </body>
 </html>
