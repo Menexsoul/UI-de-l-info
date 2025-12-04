@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Système de Tours — Décisions</title>
+<style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+    .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+    button { padding: 10px 15px; margin: 10px 0; cursor: pointer; border-radius: 6px; border:none; font-weight: bold; }
+    .opt { background: #e5ffe5; }
+    .opt:hover { background: #c9f7c9; }
+    .stats { background: #f0f0f0; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Système de Décisions avec Conséquences</h1>
+
+    <div class="stats">
+        <p><strong>Variable 1 (Budget) :</strong> <span id="var1">50</span></p>
+        <p><strong>Variable 2 (Autonomie) :</strong> <span id="var2">15</span>%</p>
+        <p><strong>Variable 3 (Écologie) :</strong> <span id="var3">65</span>/100</p>
+    </div>
+
+    <h2 id="titre">Tour 1 — Choisissez une action</h2>
+    <p id="desc">Chaque choix entraînera un destin différent selon vos variables et le pourcentage de joueurs ayant choisi chaque option.</p>
+
+    <div id="choices"></div>
+
+    <p id="resultat" style="font-weight:bold; margin-top:20px;"></p>
+</div>
+
+<script>
+let tour = 1;
+let var1 = 50;
+let var2 = 15;
+let var3 = 65;
+
+const tours = {
+    1: {
+        titre: "Tour 1 — Rentrée numérique",
+        desc: "Comment équipez-vous votre établissement ?",
+        options: [
+            {
+                txt: "Acheter 30 tablettes neuves",
+                effet: () => { var1 -= 20; var2 -= 10; var3 -= 15; },
+                stats: { budget: -20, autonomie: -10, ecologie: -15 },
+                pourcentage: 62
+            },
+            {
+                txt: "Réinstaller Linux sur d'anciens PC",
+                effet: () => { var2 += 20; var3 += 25; },
+                stats: { budget: 0, autonomie: +20, ecologie: +25 },
+                pourcentage: 38
+            }
+        ]
+    },
+
+    2: {
+        titre: "Tour 2 — Formation du personnel",
+        desc: "Allez-vous imposer une formation obligatoire ?",
+        options: [
+            {
+                txt: "Formation obligatoire",
+                effet: () => { var2 += 10; var1 -= 5; },
+                stats: { budget: -5, autonomie: +10, ecologie: 0 },
+                pourcentage: 51
+            },
+            {
+                txt: "Formation facultative",
+                effet: () => { var2 += 3; },
+                stats: { budget: 0, autonomie: +3, ecologie: 0 },
+                pourcentage: 49
+            }
+        ]
+    }
+};
+
+function afficherTour() {
+    const t = tours[tour];
+    document.getElementById("titre").innerText = t.titre;
+    document.getElementById("desc").innerText = t.desc;
+
+    let html = "";
+    t.options.forEach((opt, i) => {
+        html += `<button class='opt' onclick='choisir(${i})'>${opt.txt}</button><br>`;
+    });
+
+    document.getElementById("choices").innerHTML = html;
+}
+
+afficherTour();
+
+function choisir(index) {
+    const opt = tours[tour].options[index];
+    opt.effet();
+
+    document.getElementById("var1").innerText = var1;
+    document.getElementById("var2").innerText = var2;
+    document.getElementById("var3").innerText = var3;
+
+    document.getElementById("resultat").innerText = `Vous avez choisi : ${opt.txt} (choisi par ${opt.pourcentage}% des joueurs). Conséquences appliquées !`;
+
+    tour++;
+
+    if (tours[tour]) {
+        setTimeout(() => {
+            document.getElementById("resultat").innerText = "";
+            afficherTour();
+        }, 1500);
+    } else {
+        document.getElementById("titre").innerText = "Fin de la simulation";
+        document.getElementById("desc").innerText = "Vos choix ont forgé votre établissement.";
+        document.getElementById("choices").innerHTML = "";
+    }
+}
+</script>
+</body>
+</html>
