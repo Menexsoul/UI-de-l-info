@@ -447,5 +447,325 @@ const scenarios = {
                 effect: () => { autonomie += (50 * rewardMult); ecologie += 5; },
             }
         ]
+    },
+    12: {
+        title: "REQ_12: ACCREDITATION ISO 27001",
+        desc: diff === 'hard'
+            ? "> [COMPLIANCE] Audit de sécurité externe prévu. Normes strictes imposées."
+            : diff === 'easy'
+            ? "> [INFO] Certification simple : votre infrastructure libre est déjà conforme."
+            : "> [AUDIT] Audit ISO 27001 obligatoire pour les données scolaires.",
+        options: [
+            {
+                type: "goliath", title: "Solution Propriétaire Certifiée", 
+                desc: "Acheter une solution 'clé en main' ISO. Coûteux mais garanti.", 
+                icon: "verified_user",
+                stats: [ 
+                    {l:"Budget", v:`-${(8 * costMult).toFixed(1)} k€`, c:"text-danger"}, 
+                    {l:"Confiance", v:"++", c:"text-success"},
+                    {l:"Auto", v:"-15%", c:"text-danger"} 
+                ],
+                effect: () => { budget -= (8 * costMult); autonomie -= 15; ecologie -= 10; },
+            },
+            {
+                type: "nird", title: "Documentation NIRD", 
+                desc: "Documenter et certifier votre infrastructure existante.", 
+                icon: "description",
+                stats: [ 
+                    {l:"Budget", v:"-0.5 k€", c:"text-success"}, 
+                    {l:"Auto", v:`+${Math.round(15 * rewardMult)}%`, c:"text-success"},
+                    {l:"Confiance", v:"+", c:"text-success"} 
+                ],
+                effect: () => { budget -= 0.5; autonomie += (15 * rewardMult); ecologie += 2; },
+            }
+        ]
+    },
+    13: {
+        title: "REQ_13: PARTENARIAT STARTUPS EDTECH",
+        desc: diff === 'hard'
+            ? "> [BUSINESS] Des startups exigent d'installer leurs suites propriétaires. Chantage au financement."
+            : diff === 'easy'
+            ? "> [OPPORTUNITY] Une startup propose une intégration facile avec votre pile libre."
+            : "> [PROPOSAL] Startup EdTech propose un partenariat exclusif.",
+        options: [
+            {
+                type: "goliath", title: "Contrat d'Exclusivité", 
+                desc: "Tout est compatible avec leur écosystème payant.", 
+                icon: "trending_up",
+                stats: [ 
+                    {l:"Financement", v:`+${(6 * (diff==='hard' ? 1.5 : 1)).toFixed(1)} k€`, c:"text-success"}, 
+                    {l:"Auto", v:"-25%", c:"text-danger"},
+                    {l:"Liberté", v:"Perdue", c:"text-danger"} 
+                ],
+                effect: () => { budget += (6 * (diff==='hard' ? 1.5 : 1)); autonomie -= 25; ecologie -= 5; },
+            },
+            {
+                type: "nird", title: "Intégration Open Source", 
+                desc: "Utiliser des APIs ouvertes. Partenaire devient contributeur.", 
+                icon: "hub",
+                stats: [ 
+                    {l:"Financement", v:`+${(2 * costMult).toFixed(1)} k€`, c:"text-success"}, 
+                    {l:"Auto", v:`+${Math.round(20 * rewardMult)}%`, c:"text-success"},
+                    {l:"Écosystème", v:"Enrichi", c:"text-success"} 
+                ],
+                effect: () => { budget += (2 * costMult); autonomie += (20 * rewardMult); ecologie += 3; },
+            }
+        ]
+    },
+    14: {
+        title: "REQ_14: CRISE PEDAGOGIQUE - LES PROFS RETRAITES",
+        desc: diff === 'hard'
+            ? "> [HR_CRISIS] Les anciens profs fidèles à Windows 7 veulent partir en retraite. Ils refusent la formation."
+            : diff === 'easy'
+            ? "> [RETIREMENT] Quelques retraites planifiées. Transition naturelle possible."
+            : "> [TRANSITION] Certains profs historiques arrivent en fin de carrière.",
+        options: [
+            {
+                type: "goliath", title: "Rester sur Windows", 
+                desc: "Garder Windows pour les vieux profs. Deux systèmes cohabitent.", 
+                icon: "people",
+                stats: [ 
+                    {l:"Budget", v:`-${(3 * costMult).toFixed(1)} k€/an`, c:"text-danger"}, 
+                    {l:"Complexité", v:"++", c:"text-danger"},
+                    {l:"Transition", v:"Bloquée", c:"text-danger"} 
+                ],
+                effect: () => { budget -= (3 * costMult); autonomie -= 10; ecologie -= 5; },
+            },
+            {
+                type: "nird", title: "Investir dans la Jeunesse", 
+                desc: "Former les nouveaux entrants sur Linux. Nouvelle génération native.", 
+                icon: "auto_awesome",
+                stats: [ 
+                    {l:"Budget", v:"-1 k€", c:"text-success"}, 
+                    {l:"Auto", v:`+${Math.round(25 * rewardMult)}%`, c:"text-success"},
+                    {l:"Avenir", v:"Sécurisé", c:"text-success"} 
+                ],
+                effect: () => { budget -= 1; autonomie += (25 * rewardMult); ecologie += 2; },
+            }
+        ]
+    },
+    15: {
+        title: "REQ_15: ELECTIONS - NOUVEAU RECTEUR",
+        desc: diff === 'hard'
+            ? "> [POLITICS] Le nouveau recteur est un ancien patron de Microsoft France. Pression politique extrême."
+            : diff === 'easy'
+            ? "> [POLITICS] Le nouveau recteur est un fervent supporter de l'open source."
+            : "> [POLITICS] Changement d'administration. Politique numérique à redéfinir.",
+        options: [
+            {
+                type: "goliath", title: "Se Plier aux Ordres", 
+                desc: "Tout abandonner pour les demandes du recteur. Carrière sauvée.", 
+                icon: "check_circle",
+                stats: [ 
+                    {l:"Sécurité", v:"+++", c:"text-success"}, 
+                    {l:"Convictions", v:"Vendues", c:"text-danger"},
+                    {l:"Auto", v:"-40%", c:"text-danger"} 
+                ],
+                effect: () => { autonomie -= 40; budget += 3; ecologie -= 15; },
+            },
+            {
+                type: "nird", title: "Présenter les Résultats", 
+                desc: "Montrer que NIRD fonctionne mieux et coûte moins. Convaincre le recteur.", 
+                icon: "trending_up",
+                stats: [ 
+                    {l:"Risque", v:"Modéré", c:"text-warning"}, 
+                    {l:"Auto", v:`+${Math.round(30 * rewardMult)}%`, c:"text-success"},
+                    {l:"Liberté", v:"Préservée", c:"text-success"} 
+                ],
+                effect: () => { autonomie += (30 * rewardMult); budget += 2; ecologie += 5; },
+            }
+        ]
+    },
+    16: {
+        title: "REQ_16: INCIDENT SERVEUR - PANNE DISQUE",
+        desc: diff === 'hard'
+            ? "> [CRITICAL] Le serveur Nextcloud tombe en panne disque. Données à récupérer d'urgence. Silence radio."
+            : diff === 'easy'
+            ? "> [NOTICE] Disque dupliqué en RAID. Remplacement simple et rapide."
+            : "> [ALERT] Panne disque sur le serveur de stockage. Données en danger.",
+        options: [
+            {
+                type: "goliath", title: "Appeler Hotline Support Payante", 
+                desc: "Service premium 24/7. Coûteux mais rapide.", 
+                icon: "support_agent",
+                stats: [ 
+                    {l:"Budget", v:`-${(5 * costMult).toFixed(1)} k€`, c:"text-danger"}, 
+                    {l:"Temps", v:"2h", c:"text-success"},
+                    {l:"Auto", v:"-5%", c:"text-danger"} 
+                ],
+                effect: () => { budget -= (5 * costMult); autonomie -= 5; },
+            },
+            {
+                type: "nird", title: "Équipe Interne NIRD", 
+                desc: "Les admins Linux maison récupèrent les données eux-mêmes.", 
+                icon: "engineering",
+                stats: [ 
+                    {l:"Budget", v:"0 €", c:"text-success"}, 
+                    {l:"Temps", v:"4h", c:"text-warning"},
+                    {l:"Auto", v:`+${Math.round(10 * rewardMult)}%`, c:"text-success"} 
+                ],
+                effect: () => { autonomie += (10 * rewardMult); ecologie += 1; },
+            }
+        ]
+    },
+    17: {
+        title: "REQ_17: APPEL D'OFFRE EUROPEEN",
+        desc: diff === 'hard'
+            ? "> [EU_REGULATION] Appel d'offre européen : seules les solutions certifiées IBM/Microsoft sont acceptées."
+            : diff === 'easy'
+            ? "> [EU_REGULATION] Appel d'offre européen : Linux et Open Source sont favorisés."
+            : "> [EU_REGULATION] Appel d'offre européen : pour le système d'information du réseau scolaire.",
+        options: [
+            {
+                type: "goliath", title: "Soumissionner avec Microsoft", 
+                desc: "Passer par un intégrateur certifié Microsoft.", 
+                icon: "business",
+                stats: [ 
+                    {l:"Chances", v:"++", c:"text-success"}, 
+                    {l:"Budget", v:`-${(10 * costMult).toFixed(1)} k€`, c:"text-danger"},
+                    {l:"Auto", v:"-20%", c:"text-danger"} 
+                ],
+                effect: () => { budget -= (10 * costMult); autonomie -= 20; ecologie -= 10; },
+            },
+            {
+                type: "nird", title: "Dossier Open Source Européen", 
+                desc: "Montrer la conformité RGPD et souveraineté numérique.", 
+                icon: "public",
+                stats: [ 
+                    {l:"Chances", v:`${diff === 'easy' ? '+++' : '+'}`, c:"text-success"}, 
+                    {l:"Budget", v:`+${(7 * rewardMult).toFixed(1)} k€`, c:"text-success"},
+                    {l:"Éco", v:"+15 pts", c:"text-success"} 
+                ],
+                effect: () => { budget += (7 * rewardMult); autonomie += (20 * rewardMult); ecologie += 15; },
+            }
+        ]
+    },
+    18: {
+        title: "REQ_18: CIBERATTAQUE RANSOMWARE (2nd Vague)",
+        desc: diff === 'hard'
+            ? "> [CRITICAL] 2ème vague de ransomware. Les attaquants sont plus organisés et ciblent les écoles."
+            : diff === 'easy'
+            ? "> [ALERT] Tentative de ransomware détectée. Système en quarantaine, données sauvegardées."
+            : "> [ALERT] Nouvelle attaque ransomware détectée sur le réseau.",
+        options: [
+            {
+                type: "goliath", title: "Payer la Rançon (Encore)", 
+                desc: "Ils promettent que c'est la dernière fois. Naïveté ?", 
+                icon: "money",
+                stats: [ 
+                    {l:"Budget", v:`-${(12 * costMult).toFixed(1)} k€`, c:"text-danger"}, 
+                    {l:"Données", v:"Récupérées", c:"text-success"},
+                    {l:"Morale", v:"Détruite", c:"text-danger"} 
+                ],
+                effect: () => { budget -= (12 * costMult); autonomie -= 15; ecologie -= 10; },
+            },
+            {
+                type: "nird", title: "Restore depuis Backup Linux", 
+                desc: "Les sauvegardes en RAID décentralisées ont sauvé la mise.", 
+                icon: "backup",
+                stats: [ 
+                    {l:"Budget", v:"0 €", c:"text-success"}, 
+                    {l:"Données", v:"Restaurées", c:"text-success"},
+                    {l:"Sécurité", v:`+${Math.round(20 * rewardMult)}%`, c:"text-success"} 
+                ],
+                effect: () => { autonomie += (20 * rewardMult); ecologie += 3; },
+            }
+        ]
+    },
+    19: {
+        title: "REQ_19: DEMANDE D'INTEGRATION IA GENERATIVE",
+        desc: diff === 'hard'
+            ? "> [TECH_TREND] GAFAM proposent d'intégrer ChatGPT 4 Turbo dans Classroom. Gratuit 'temporairement'."
+            : diff === 'easy'
+            ? "> [TECH_TREND] Des outils IA open source existent. Intégration facile et souveraine."
+            : "> [TECH_TREND] IA générative demandée. Plusieurs solutions disponibles.",
+        options: [
+            {
+                type: "goliath", title: "ChatGPT Propriétaire", 
+                desc: "Intégration facile mais dépendance et données envoyées aux USA.", 
+                icon: "smart_toy",
+                stats: [ 
+                    {l:"Praticité", v:"+++", c:"text-success"}, 
+                    {l:"RGPD", v:"Violé", c:"text-danger"},
+                    {l:"Données", v:"Aux USA", c:"text-danger"} 
+                ],
+                effect: () => { autonomie -= 30; ecologie -= 8; budget += 2; },
+            },
+            {
+                type: "nird", title: "LLaMa 2 / Mistral Souverain", 
+                desc: "Déployer un modèle open source en local. Plus lent mais souverain.", 
+                icon: "memory",
+                stats: [ 
+                    {l:"Budget", v:`-${(4 * costMult).toFixed(1)} k€`, c:"text-danger"}, 
+                    {l:"Souveraineté", v:"+++", c:"text-success"},
+                    {l:"Auto", v:`+${Math.round(20 * rewardMult)}%`, c:"text-success"} 
+                ],
+                effect: () => { budget -= (4 * costMult); autonomie += (20 * rewardMult); ecologie += 5; },
+            }
+        ]
+    },
+    20: {
+        title: "REQ_20: FESTIVAL EDUCATIF - SHOWCASE NIRD",
+        desc: diff === 'hard'
+            ? "> [VISIBILITY] Festival régional des innovations éducatives. Opportunité rare de montrer votre succès."
+            : diff === 'easy'
+            ? "> [VISIBILITY] Festival national : votre projet NIRD est invité comme modèle."
+            : "> [VISIBILITY] Festival educatif régional : proposez votre retour d'expérience NIRD.",
+        options: [
+            {
+                type: "goliath", title: "Ignorer et Rester Discret", 
+                desc: "Pourquoi s'exposer ? Laisser les autres innover.", 
+                icon: "lock",
+                stats: [ 
+                    {l:"Visibilité", v:"Zéro", c:"text-danger"}, 
+                    {l:"Influence", v:"Nulle", c:"text-danger"},
+                    {l:"Budget", v:"0 €", c:"text-text-dark"} 
+                ],
+                effect: () => { },
+            },
+            {
+                type: "nird", title: "Présentation + Atelier", 
+                desc: "Montrer comment vous avez économisé 50k€ et sauvé la planète.", 
+                icon: "stage",
+                stats: [ 
+                    {l:"Visibilité", v:"NATIONALE", c:"text-success"}, 
+                    {l:"Influence", v:`+${Math.round(40 * rewardMult)}%`, c:"text-success"},
+                    {l:"Budget", v:"+3 k€", c:"text-success"} 
+                ],
+                effect: () => { autonomie += (40 * rewardMult); budget += 3; ecologie += 8; },
+            }
+        ]
+    },
+    21: {
+        title: "REQ_21: FINAL LAYER - INDEPENDENCE DAY",
+        desc: diff === 'hard'
+            ? "> [FINALE] Vous avez survécu aux 5 années les plus difficiles. Les GAFAM ont perdu leur emprise sur vous."
+            : diff === 'easy'
+            ? "> [FINALE] Vous avez atteint l'indépendance technologique. Bienvenue en 2030."
+            : "> [FINALE] Bilan final : où en êtes-vous ? Quel héritage laissez-vous ?",
+        options: [
+            {
+                type: "goliath", title: "Status Quo GAFAM", 
+                desc: "Vous êtes retombé sous la dépendance. Cycle infernal recommence.", 
+                icon: "trending_down",
+                stats: [ 
+                    {l:"Autonomie", v:`${Math.max(0, autonomie)}%`, c:"text-danger"}, 
+                    {l:"Avenir", v:"Incertain", c:"text-danger"},
+                    {l:"Héritage", v:"Perdu", c:"text-danger"} 
+                ],
+                effect: () => { autonomie = Math.max(0, autonomie); },
+            },
+            {
+                type: "nird", title: "Indépendance NIRD Totale", 
+                desc: "Vous avez construit un modèle pérenne, open source, souverain et écologique.", 
+                icon: "emoji_events",
+                stats: [ 
+                    {l:"Autonomie", v:"100%", c:"text-success"}, 
+                    {l:"Héritage", v:"LEGACY", c:"text-success"},
+                    {l:"Planète", v:"Sauvée", c:"text-success"} 
+                ],
+                effect: () => { autonomie = 100; ecologie = Math.min(100, ecologie + 20); },
+            }
+        ]
     }
 };
