@@ -426,6 +426,23 @@
     if(difficulty === 'easy') { budget = 70; autonomie = 20; }
     if(difficulty === 'hard') { budget = 20; autonomie = 5; ecologie = 50; }
 
+    // --- ACHIEVEMENTS NOTIFICATIONS ---
+    function triggerAchievementNotification(achievement) {
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-4 right-4 bg-gradient-to-r from-neon-blue to-neon-green border-2 border-neon-green p-4 rounded text-white shadow-lg animate-pulse z-50 max-w-xs';
+        notification.innerHTML = `
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-2xl">verified</span>
+                <div>
+                    <h4 class="font-bold">${achievement.name}</h4>
+                    <p class="text-xs opacity-90">${achievement.desc}</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 4000);
+    }
+
     // --- MOTEUR DE JEU ---
     function switchView(viewName) {
         document.getElementById('game-view').classList.add('hidden');
@@ -449,27 +466,83 @@
     function renderShop() {
         const container = document.getElementById("shop-container");
         container.innerHTML = "";
+        
+        // Créer le HTML pour les achievements
+        let achievementsHTML = `
+            <div class="col-span-full mb-6 p-5 border border-terminal-border rounded bg-terminal-bg/50">
+                <h3 class="font-bold text-neon-green text-lg mb-4">🏆 ACHIEVEMENTS</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        `;
+        
+        achievements.forEach(ach => {
+            const unlocked = achievementsUnlocked[ach.id];
+            achievementsHTML += `
+                <div class="flex items-center gap-2 p-3 rounded border ${
+                    unlocked 
+                        ? 'border-neon-green bg-neon-green/10' 
+                        : 'border-gray-600 bg-gray-900/30 opacity-50 grayscale'
+                }">
+                    <span class="material-symbols-outlined text-xl">${unlocked ? ach.icon : 'lock'}</span>
+                    <div class="text-xs">
+                        <p class="font-bold">${ach.name}</p>
+                        <p class="text-text-dark">${ach.desc}</p>
+                    </div>
+                </div>
+            `;
+        });
+        
+        achievementsHTML += `</div></div>`;
+        container.innerHTML = achievementsHTML;
+        
+        // Ajouter les items du shop
         shopItems.forEach(item => {
             const affordable = item.canBuy();
+            const requiresAch = item.requiresAchievement && item.requiresAchievement.length > 0;
+            const unlockedByAch = isItemUnlockedByAchievement(item.id);
+            const hasReachedLimit = (itemPurchases[item.id] || 0) >= item.maxPurchases;
+            
             const opacity = affordable ? "opacity-100" : "opacity-50 grayscale";
+            const btnText = hasReachedLimit ? 'LIMITE ATTEINTE' : (affordable ? 'ACHETER' : 'INDISPONIBLE');
             const btnClass = affordable 
                 ? `bg-${item.color}/20 text-${item.color} border-${item.color} hover:bg-${item.color}/40 cursor-pointer` 
                 : "bg-gray-800 text-gray-500 border-gray-700 cursor-not-allowed";
-
+            
+            // Badge pour les requirements
+            let badge = '';
+            if(requiresAch && !unlockedByAch) {
+                const requiredAchs = item.requiresAchievement
+                    .map(id => achievements.find(a => a.id === id)?.name)
+                    .filter(Boolean)
+                    .join(' ou ');
+                badge = `<span class="absolute top-2 left-2 text-xs px-2 py-1 bg-warning/30 border border-warning text-warning rounded flex items-center gap-1" title="Débloquer: ${requiredAchs}"><span class="material-symbols-outlined text-sm">lock</span>BLOQUÉ</span>`;
+            } else if(unlockedByAch) {
+                badge = `<span class="absolute top-2 left-2 text-xs px-2 py-1 bg-neon-green/30 border border-neon-green text-neon-green rounded flex items-center gap-1"><span class="material-symbols-outlined text-sm">verified</span>DÉBLOQUÉ</span>`;
+            }
+            
+            // Compteur d'achats
+            const purchaseCount = itemPurchases[item.id] || 0;
+            const counterDisplay = `<span class="text-xs text-text-dark">${purchaseCount}/${item.maxPurchases}</span>`;
+            
             container.innerHTML += `
-            <div class="flex flex-col bg-terminal-bg border border-terminal-border p-5 rounded ${opacity} transition-all">
-                <div class="flex justify-between items-start mb-4">
-                    <span class="material-symbols-outlined text-3xl text-${item.color}">${item.icon}</span>
-                    <span class="text-xs font-bold border border-${item.color} text-${item.color} px-2 py-1 rounded">${item.costDesc}</span>
+                <div class="flex flex-col bg-terminal-bg border border-terminal-border p-5 rounded ${opacity} transition-all relative">
+                    ${badge}
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="material-symbols-outlined text-3xl text-${item.color}">${item.icon}</span>
+                        <div class="flex flex-col items-end gap-1">
+                            <span class="text-xs font-bold border border-${item.color} text-${item.color} px-2 py-1 rounded">${item.costDesc}</span>
+                            ${counterDisplay}
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-white text-lg">${item.name}</h3>
+                    <p class="text-xs text-text-dark mt-1 mb-4">${item.desc}</p>
+                    <div class="text-sm font-semibold text-${item.color} mb-4">Effet: ${item.effectDesc}</div>
+                    <button onclick="buyItem('${item.id}')" ${!affordable ? 'disabled' : ''} class="w-full py-2 border rounded font-bold uppercase text-sm ${btnClass}">
+                        ${btnText}
+                    </button>
                 </div>
-                <h3 class="font-bold text-white text-lg">${item.name}</h3>
-                <p class="text-xs text-text-dark mt-1 mb-4">${item.desc}</p>
-                <div class="text-sm font-semibold text-${item.color} mb-4">Effet: ${item.effectDesc}</div>
-                <button onclick="buyItem('${item.id}')" ${!affordable ? 'disabled' : ''} class="w-full py-2 border rounded font-bold uppercase text-sm ${btnClass}">
-                    ${affordable ? 'ACHETER' : 'INDISPONIBLE'}
-                </button>
-            </div>`;
+            `;
         });
+        
         updateHeader();
     }
 
@@ -477,12 +550,12 @@
         const item = shopItems.find(i => i.id === id);
         if(item && item.canBuy()) {
             const msg = item.buy();
+            checkAchievements(); // Vérifier les achievements après l'achat
             alert(`TRANSACTION RÉUSSIE : ${msg}`); 
             renderShop(); 
             const feedback = document.getElementById("feedback-area");
             feedback.innerHTML = `> ACHAT : ${item.name}<br>${msg}`;
             feedback.classList.remove("hidden");
-            // Le Troll Bot commente l'achat n'importe comment
             addBotMessage(`Ah super, tu as acheté "${item.name}". Ça va sûrement faire exploser le micro-ondes.`);
         }
     }
@@ -591,10 +664,12 @@
             scenarioTitle: scenarioData.title,
             choiceTitle: choice.title,
             choiceType: choice.type,
+            type: choice.type, // Ajouter type pour compatibility avec achievements
             isGood: choice.type !== 'goliath' // Tout sauf Goliath = bon choix (david, nird, etc.)
         });
         
         choice.effect();
+        checkAchievements(); // Vérifier les achievements après chaque choix
         
         // Gérer les corrélations (déblocages et blocages)
         if (choice.unlocks) {

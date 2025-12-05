@@ -1,3 +1,88 @@
+// --- SYSTÈME D'ACHIEVEMENTS ---
+let achievementsUnlocked = {}; // Track des achievements obtenus
+
+const achievements = [
+    {
+        id: 'eco_warrior',
+        name: "🌍 Guerrier Écologique",
+        desc: "Atteindre une écologie de 80+",
+        icon: "eco",
+        color: "neon-green",
+        check: () => ecologie >= 80,
+        unlocksBenefits: ['stickers', 'duckduckgo'] // Ces items se débloquent
+    },
+    {
+        id: 'autonomy_master',
+        name: "🦅 Maître de l'Autonomie",
+        desc: "Atteindre une autonomie de 80+",
+        icon: "security",
+        color: "neon-blue",
+        check: () => autonomie >= 80,
+        unlocksBenefits: ['cafe', 'conspiracy']
+    },
+    {
+        id: 'budget_master',
+        name: "💰 Gestionnaire d'Or",
+        desc: "Accumuler plus de 30k€",
+        icon: "paid",
+        color: "warning",
+        check: () => budget >= 30,
+        unlocksBenefits: ['poster']
+    },
+    {
+        id: 'balanced_path',
+        name: "⚖️ Voie Équilibrée",
+        desc: "Tous les scores >= 60",
+        icon: "balance",
+        color: "neon-blue",
+        check: () => budget >= 30 && autonomie >= 60 && ecologie >= 60,
+        unlocksBenefits: ['frite']
+    },
+    {
+        id: 'nird_master',
+        name: "🤓 Maître NIRD",
+        desc: "Faire 5+ choix NIRD",
+        icon: "psychology",
+        color: "neon-green",
+        check: () => countChoicesByType('nird') >= 5,
+        unlocksBenefits: ['stickers', 'poster']
+    },
+    {
+        id: 'david_champion',
+        name: "🗽 Champion David",
+        desc: "Faire 5+ choix David",
+        icon: "favorite",
+        color: "neon-red",
+        check: () => countChoicesByType('david') >= 5,
+        unlocksBenefits: ['duckduckgo', 'cafe']
+    },
+    {
+        id: 'free_spirit',
+        name: "🕊️ Esprit Libre",
+        desc: "Aucun choix propriétaire (aucun Goliath)",
+        icon: "freedom",
+        color: "neon-green",
+        check: () => countChoicesByType('goliath') === 0,
+        unlocksBenefits: ['frite', 'conspiracy', 'cafe']
+    }
+];
+
+// Fonction helper pour compter les choix par type
+function countChoicesByType(type) {
+    if(typeof choicesHistory === 'undefined') return 0;
+    return choicesHistory.filter(c => c.type === type).length;
+}
+
+// Fonction pour vérifier et débloquer les achievements
+function checkAchievements() {
+    achievements.forEach(ach => {
+        if(!achievementsUnlocked[ach.id] && ach.check()) {
+            achievementsUnlocked[ach.id] = true;
+            triggerAchievementNotification(ach);
+        }
+    });
+}
+
 // --- INITIALISATION DES VARIABLES GLOBALES ---
 // Ces variables sont utilisées partout dans le jeu
 let budget = 50;
@@ -36,20 +121,31 @@ if (diff === 'easy') {
 }
 
 // --- BOUTIQUE ADAPTATIVE ---
+let itemPurchases = {}; // Tracker les achats effectués
+
+// Fonction pour vérifier si un item est débloqué par achievements
+function isItemUnlockedByAchievement(itemId) {
+    return achievements.some(ach => 
+        achievementsUnlocked[ach.id] && ach.unlocksBenefits.includes(itemId)
+    );
+}
+
 const shopItems = [
     {
         id: 'consultant',
         name: "Consultant Externe",
         desc: "Expert en conduite du changement pour accélérer l'adoption du libre.",
-        // Le texte du coût s'adapte automatiquement
         costDesc: `${(2 * costMult).toFixed(1)} k€`, 
         effectDesc: `+${Math.round(10 * rewardMult)}% Auto`,
         icon: "support_agent",
         color: "neon-blue",
-        canBuy: () => budget >= (2 * costMult),
+        maxPurchases: 2,
+        requiresAchievement: null,
+        canBuy: () => budget >= (2 * costMult) && (itemPurchases['consultant'] || 0) < 2,
         buy: () => { 
             budget -= (2 * costMult); 
-            autonomie += (10 * rewardMult); 
+            autonomie += (10 * rewardMult);
+            itemPurchases['consultant'] = (itemPurchases['consultant'] || 0) + 1;
             return "Consultant engagé. L'équipe gagne en compétence."; 
         }
     },
@@ -58,13 +154,16 @@ const shopItems = [
         name: "Vente 'Vintage'",
         desc: "Revendre les vieux PC non reconditionnés à des brocanteurs.",
         costDesc: `-${Math.round(5 * ecoMult)} pts Écologie`,
-        effectDesc: `+${(3 * (diff === 'easy' ? 1.5 : 1)).toFixed(1)} k€ Budget`, // Rapporte plus en facile
+        effectDesc: `+${(3 * (diff === 'easy' ? 1.5 : 1)).toFixed(1)} k€ Budget`,
         icon: "sell",
         color: "warning",
-        canBuy: () => ecologie >= (10 * ecoMult),
+        maxPurchases: 3,
+        requiresAchievement: null,
+        canBuy: () => ecologie >= (10 * ecoMult) && (itemPurchases['vente_matos'] || 0) < 3,
         buy: () => { 
             ecologie -= (5 * ecoMult); 
             budget += (3 * (diff === 'easy' ? 1.5 : 1)); 
+            itemPurchases['vente_matos'] = (itemPurchases['vente_matos'] || 0) + 1;
             return "Vieux matériel liquidé. La trésorerie respire, mais pas la planète."; 
         }
     },
@@ -72,13 +171,16 @@ const shopItems = [
         id: 'subvention',
         name: "Subvention Green IT",
         desc: "Demander une aide régionale pour la transition écologique.",
-        costDesc: `Score Éco > ${diff === 'hard' ? 90 : 80} requis`, // Plus dur à avoir en hard
+        costDesc: `Score Éco > ${diff === 'hard' ? 90 : 80} requis`,
         effectDesc: "+5 k€ Budget",
         icon: "verified",
         color: "neon-green",
-        canBuy: () => ecologie >= (diff === 'hard' ? 90 : 80),
+        maxPurchases: 1,
+        requiresAchievement: null,
+        canBuy: () => ecologie >= (diff === 'hard' ? 90 : 80) && (itemPurchases['subvention'] || 0) < 1,
         buy: () => { 
-            budget += 5; 
+            budget += 5;
+            itemPurchases['subvention'] = (itemPurchases['subvention'] || 0) + 1;
             return "Dossier accepté ! La région soutient votre démarche vertueuse."; 
         }
     },
@@ -90,11 +192,129 @@ const shopItems = [
         effectDesc: `+${Math.round(20 * rewardMult)}% Auto`,
         icon: "school",
         color: "neon-blue",
-        canBuy: () => budget >= (4 * costMult),
+        maxPurchases: 2,
+        requiresAchievement: null,
+        canBuy: () => budget >= (4 * costMult) && (itemPurchases['formation'] || 0) < 2,
         buy: () => { 
             budget -= (4 * costMult); 
-            autonomie += (20 * rewardMult); 
+            autonomie += (20 * rewardMult);
+            itemPurchases['formation'] = (itemPurchases['formation'] || 0) + 1;
             return "Formation validée. Le personnel est prêt à résister."; 
+        }
+    },
+    {
+        id: 'frite',
+        name: "🍟 Friteuse Gamer LED",
+        desc: "Parce que les devs codent mieux avec des frites. Contribution énergétique garantie.",
+        costDesc: "0.5 k€ (+ Achievement)",
+        effectDesc: "+1% Bonheur très discutable",
+        icon: "fastfood",
+        color: "warning",
+        maxPurchases: 1,
+        requiresAchievement: ['balanced_path', 'free_spirit'],
+        canBuy: () => budget >= 0.5 && (itemPurchases['frite'] || 0) < 1 && isItemUnlockedByAchievement('frite'),
+        buy: () => { 
+            budget -= 0.5;
+            autonomie -= 2;
+            ecologie -= 15;
+            itemPurchases['frite'] = (itemPurchases['frite'] || 0) + 1;
+            return "🍟 ACHAT MARRANT ! La friteuse LED est livrée. Les devs sont confus mais contents."; 
+        }
+    },
+    {
+        id: 'cafe',
+        name: "☕ Machine à Café Premium",
+        desc: "Une machine à café qui n'accepte que des capsules propriétaires (par choix).",
+        costDesc: "1 k€ (+ Achievement)",
+        effectDesc: "Ironiquement +5% Auto",
+        icon: "local_cafe",
+        color: "neon-red",
+        maxPurchases: 1,
+        requiresAchievement: ['autonomy_master', 'david_champion'],
+        canBuy: () => budget >= 1 && (itemPurchases['cafe'] || 0) < 1 && isItemUnlockedByAchievement('cafe'),
+        buy: () => { 
+            budget -= 1;
+            autonomie += 5;
+            ecologie -= 20;
+            itemPurchases['cafe'] = (itemPurchases['cafe'] || 0) + 1;
+            return "☕ ACHAT MARRANT ! Une machine à café PROPRIÉTAIRE dans un lycée du libre. L'ironie est délicieuse."; 
+        }
+    },
+    {
+        id: 'poster',
+        name: "🖼️ Poster Linus Torvalds",
+        desc: "Un poster motivant du créateur de Linux. Les étudiants seront inspirés (ou terrorisés).",
+        costDesc: "0.1 k€ (+ Achievement)",
+        effectDesc: "+3% Auto (placebo)",
+        icon: "image",
+        color: "neon-green",
+        maxPurchases: 5,
+        requiresAchievement: ['budget_master', 'nird_master'],
+        canBuy: () => budget >= 0.1 && (itemPurchases['poster'] || 0) < 5 && isItemUnlockedByAchievement('poster'),
+        buy: () => { 
+            budget -= 0.1;
+            autonomie += 3;
+            itemPurchases['poster'] = (itemPurchases['poster'] || 0) + 1;
+            const nb = itemPurchases['poster'];
+            if(nb === 5) return "🖼️ ACHAT MARRANT ! Vous avez 5 posters ! Le mur de Linux regarde votre âme...";
+            return `🖼️ ACHAT MARRANT ! Poster #${nb} affiché. Linus vous observe.`; 
+        }
+    },
+    {
+        id: 'duckduckgo',
+        name: "🦆 Mascotte DuckDuckGo",
+        desc: "Un canard en peluche pour célébrer la vie privée. Quack = Liberté.",
+        costDesc: "0.2 k€ (+ Achievement)",
+        effectDesc: "+2% Écologie (symboliquement)",
+        icon: "pets",
+        color: "neon-blue",
+        maxPurchases: 3,
+        requiresAchievement: ['eco_warrior', 'david_champion'],
+        canBuy: () => budget >= 0.2 && (itemPurchases['duckduckgo'] || 0) < 3 && isItemUnlockedByAchievement('duckduckgo'),
+        buy: () => { 
+            budget -= 0.2;
+            ecologie += 5;
+            itemPurchases['duckduckgo'] = (itemPurchases['duckduckgo'] || 0) + 1;
+            return "🦆 ACHAT MARRANT ! Un canard déborde de joie. Quack quack liberté !"; 
+        }
+    },
+    {
+        id: 'conspiracy',
+        name: "📺 Pack Théories Conspirationnistes",
+        desc: "Livres de théories sur les GAFAM. Bonus : augmente la paranoïa (positive).",
+        costDesc: "0.3 k€ (+ Achievement)",
+        effectDesc: "-5% Écologie (mais +10% Autonomie !)",
+        icon: "auto_awesome",
+        color: "neon-red",
+        maxPurchases: 1,
+        requiresAchievement: ['autonomy_master', 'free_spirit'],
+        canBuy: () => budget >= 0.3 && (itemPurchases['conspiracy'] || 0) < 1 && isItemUnlockedByAchievement('conspiracy'),
+        buy: () => { 
+            budget -= 0.3;
+            autonomie += 10;
+            ecologie -= 5;
+            itemPurchases['conspiracy'] = (itemPurchases['conspiracy'] || 0) + 1;
+            return "📺 ACHAT MARRANT ! Les théories conspirationnistes motivent les devs à se défendre. Paranoïa productive !"; 
+        }
+    },
+    {
+        id: 'stickers',
+        name: "🎨 Pack Stickers Anarchistes",
+        desc: "Des stickers GNU, Tux et Anonymous. Pour customiser tous les laptops.",
+        costDesc: "0.05 k€ (+ Achievement)",
+        effectDesc: "+1% Autonomie (by vibes)",
+        icon: "sticker",
+        color: "neon-green",
+        maxPurchases: 10,
+        requiresAchievement: ['eco_warrior', 'nird_master'],
+        canBuy: () => budget >= 0.05 && (itemPurchases['stickers'] || 0) < 10 && isItemUnlockedByAchievement('stickers'),
+        buy: () => { 
+            budget -= 0.05;
+            autonomie += 1;
+            itemPurchases['stickers'] = (itemPurchases['stickers'] || 0) + 1;
+            const nb = itemPurchases['stickers'];
+            if(nb === 10) return "🎨 ACHAT MARRANT ! 10 packs ! Même les murs sont couverts de GNU !";
+            return `🎨 ACHAT MARRANT ! Stickers #${nb} appliqués. Vive la liberté graphique !`; 
         }
     }
 ];
