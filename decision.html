@@ -49,6 +49,28 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         
+        /* === ANIMATIONS 2D POUR CHOIX === */
+        @keyframes floatUp { from { opacity: 0; transform: translateY(0) scale(0.8); } to { opacity: 0; transform: translateY(-80px) scale(1.2); } }
+        @keyframes floatDown { from { opacity: 0; transform: translateY(0) scale(0.8); } to { opacity: 0; transform: translateY(80px) scale(1.2); } }
+        @keyframes spinOut { from { opacity: 1; transform: rotate(0deg) scale(1); } to { opacity: 0; transform: rotate(360deg) scale(0); } }
+        @keyframes pulseGrow { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+        @keyframes slideLeft { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideRight { from { opacity: 0; transform: translateX(-100px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes glowPulse { 0%, 100% { filter: drop-shadow(0 0 0px); } 50% { filter: drop-shadow(0 0 15px); } }
+        @keyframes particle { 0% { opacity: 1; } 100% { opacity: 0; } }
+        @keyframes waveEffect { 0% { clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%); } 50% { clip-path: polygon(0 30%, 100% 30%, 100% 100%, 0 100%); } 100% { clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%); } }
+        
+        /* Éléments d'animation */
+        .choice-particle { position: fixed; pointer-events: none; font-size: 2rem; font-weight: bold; }
+        .choice-animation-container { position: fixed; top: 50%; left: 50%; pointer-events: none; width: 100%; height: 100%; }
+        
+        .float-animation { animation: floatUp 2s ease-out forwards; }
+        .sink-animation { animation: floatDown 2s ease-out forwards; }
+        .spin-animation { animation: spinOut 1.5s ease-in forwards; }
+        .pulse-animation { animation: pulseGrow 0.6s ease-in-out; }
+        .glow-animation { animation: glowPulse 1.5s ease-in-out; }
+        .wave-animation { animation: waveEffect 2s ease-in-out infinite; }
+        
         .chat-scroll::-webkit-scrollbar { width: 6px; }
         .chat-scroll::-webkit-scrollbar-track { background: #121212; }
         .chat-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
@@ -353,7 +375,7 @@
 
         <div class="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col items-center bg-black bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.2),rgba(255,255,255,0))]">
             
-            <div id="game-view" class="w-full max-w-6xl bg-terminal-bg/80 backdrop-blur-sm border-2 border-terminal-border p-8 glitch-border fade-in">
+            <div id="game-view" class="w-full max-w-6xl fade-in">
                 <h1 id="scenario-title" class="text-white tracking-light text-3xl md:text-4xl font-bold leading-tight text-center">INITIALISATION...</h1>
                 <p id="scenario-desc" class="text-text-dark text-base font-normal leading-normal text-center mt-4 max-w-3xl mx-auto"></p>
                 <div id="feedback-area" class="hidden mt-6 p-4 bg-white/5 border-l-4 border-neon-blue text-white rounded shadow-lg max-w-3xl mx-auto"></div>
@@ -441,6 +463,719 @@
         `;
         document.body.appendChild(notification);
         setTimeout(() => notification.remove(), 4000);
+    }
+
+    // === ANIMATIONS 2D POUR CHOIX ===
+    function playChoiceAnimation(choice, index) {
+        const container = document.body;
+        const type = choice.type;
+        
+        // Créer un conteneur pour les animations
+        const animContainer = document.createElement('div');
+        animContainer.className = 'choice-animation-container';
+        container.appendChild(animContainer);
+        
+        if (type === 'goliath') {
+            // Animation Goliath: Descente avec effet de crash
+            playGoliathAnimation(animContainer, choice);
+        } else if (type === 'david') {
+            // Animation David: Bounce équilibré
+            playDavidAnimation(animContainer, choice);
+        } else if (type === 'nird') {
+            // Animation NIRD: Spirale technologique
+            playNirdAnimation(animContainer, choice);
+        }
+        
+        // Nettoyer après animation
+        setTimeout(() => animContainer.remove(), 2500);
+    }
+
+    // Goliath: Chute rouge avec éclat
+    function playGoliathAnimation(container, choice) {
+        const emoji = '🔴';
+        const color = '#ff3333';
+        
+        // Créer 5 particules qui tombent
+        for (let i = 0; i < 5; i++) {
+            const particle = document.createElement('div');
+            particle.textContent = emoji;
+            particle.className = 'choice-particle sink-animation';
+            particle.style.left = (Math.random() * window.innerWidth) + 'px';
+            particle.style.top = '-50px';
+            particle.style.color = color;
+            particle.style.textShadow = `0 0 10px ${color}`;
+            particle.style.animation = `floatDown ${1.5 + i * 0.2}s ease-in forwards`;
+            container.appendChild(particle);
+        }
+        
+        // Créer un texte central qui se dissout
+        const centerText = document.createElement('div');
+        centerText.textContent = choice.title.substring(0, 15) + '...';
+        centerText.style.position = 'fixed';
+        centerText.style.top = '50%';
+        centerText.style.left = '50%';
+        centerText.style.transform = 'translate(-50%, -50%)';
+        centerText.style.color = color;
+        centerText.style.fontSize = '2rem';
+        centerText.style.fontWeight = 'bold';
+        centerText.style.animation = 'spinOut 1.5s ease-in forwards';
+        centerText.style.textShadow = `0 0 20px ${color}`;
+        container.appendChild(centerText);
+    }
+
+    // David: Animation de bounce équilibré
+    function playDavidAnimation(container, choice) {
+        const emoji = '🟢';
+        const color = '#00ff66';
+        
+        // Créer 3 ondes qui se propagent
+        for (let i = 0; i < 3; i++) {
+            const wave = document.createElement('div');
+            wave.style.position = 'fixed';
+            wave.style.top = '50%';
+            wave.style.left = '50%';
+            wave.style.width = '100px';
+            wave.style.height = '100px';
+            wave.style.border = `2px solid ${color}`;
+            wave.style.borderRadius = '50%';
+            wave.style.transform = 'translate(-50%, -50%)';
+            wave.style.animation = `pulse${i} 1.2s ease-out forwards`;
+            wave.style.opacity = '0.6';
+            container.appendChild(wave);
+            
+            // Créer l'animation CSS dynamiquement
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes pulse${i} {
+                    0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+                    100% { transform: translate(-50%, -50%) scale(${3 + i}); opacity: 0; }
+                }
+            `;
+            container.appendChild(style);
+        }
+        
+        // Texte central qui pulse
+        const centerText = document.createElement('div');
+        centerText.textContent = emoji;
+        centerText.style.position = 'fixed';
+        centerText.style.top = '50%';
+        centerText.style.left = '50%';
+        centerText.style.transform = 'translate(-50%, -50%)';
+        centerText.style.fontSize = '3rem';
+        centerText.style.animation = 'pulseGrow 0.8s ease-in-out';
+        centerText.style.filter = `drop-shadow(0 0 20px ${color})`;
+        container.appendChild(centerText);
+    }
+
+    // NIRD: Animation spirale technologique
+    function playNirdAnimation(container, choice) {
+        const emoji = '🤓';
+        const color = '#00ccff';
+        
+        // Créer des particules en spirale
+        const particleCount = 8;
+        for (let i = 0; i < particleCount; i++) {
+            const angle = (i / particleCount) * Math.PI * 2;
+            const particle = document.createElement('div');
+            particle.textContent = i % 2 === 0 ? '⚙️' : '🔧';
+            particle.style.position = 'fixed';
+            particle.style.top = '50%';
+            particle.style.left = '50%';
+            particle.style.fontSize = '1.5rem';
+            particle.style.animation = `orbit${i} 1.5s ease-out forwards`;
+            container.appendChild(particle);
+            
+            // Animation orbitale
+            const style = document.createElement('style');
+            const distance = 150;
+            const endX = Math.cos(angle) * distance;
+            const endY = Math.sin(angle) * distance;
+            style.textContent = `
+                @keyframes orbit${i} {
+                    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                    100% { transform: translate(calc(-50% + ${endX}px), calc(-50% + ${endY}px)) scale(0); opacity: 0; }
+                }
+            `;
+            container.appendChild(style);
+        }
+        
+        // Texte central rotatif
+        const centerText = document.createElement('div');
+        centerText.textContent = emoji;
+        centerText.style.position = 'fixed';
+        centerText.style.top = '50%';
+        centerText.style.left = '50%';
+        centerText.style.transform = 'translate(-50%, -50%)';
+        centerText.style.fontSize = '3rem';
+        centerText.style.animation = 'spinOut 1.5s ease-in-out forwards';
+        centerText.style.filter = `drop-shadow(0 0 15px ${color})`;
+        container.appendChild(centerText);
+    }
+
+    // Animation du personnage désactivée
+    
+    function drawCharacter() {
+        const canvas = document.getElementById('character-canvas');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        // Effacer le canvas avec dégradé de fond
+        const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        bgGradient.addColorStop(0, 'rgba(18, 18, 18, 1)');
+        bgGradient.addColorStop(1, 'rgba(30, 30, 50, 1)');
+        ctx.fillStyle = bgGradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Incrémenter le compteur d'animation
+        characterAnimationFrame++;
+        
+        // Déterminer l'état du personnage
+        const autonomyRatio = autonomie / 100;
+        const ecologyRatio = ecologie / 100;
+        const choiceRatio = (choicesHistory.filter(c => c.type !== 'goliath').length) / Math.max(1, choicesHistory.length);
+        
+        // Calculs d'animation
+        const breatheOffset = Math.sin(characterAnimationFrame * 0.05) * 3;
+        const floatOffset = Math.sin(characterAnimationFrame * 0.03) * 8;
+        const walkCycle = Math.sin(characterAnimationFrame * 0.08);
+        const headBob = Math.sin(characterAnimationFrame * 0.04) * 3;
+        
+        ctx.save();
+        ctx.translate(centerX, centerY + floatOffset);
+        
+        // === OMBRE DU PERSONNAGE ===
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath();
+        ctx.ellipse(0, 120, 40 - floatOffset / 2, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // === JAMBES ===
+        const legColor = getCharacterColor();
+        const legSwing = walkCycle * 15;
+        
+        // Jambe gauche
+        ctx.save();
+        ctx.translate(-15, 40);
+        ctx.rotate((legSwing * Math.PI) / 180);
+        ctx.fillStyle = legColor;
+        ctx.filter = 'brightness(0.8)';
+        drawRoundRect(ctx, -8, 0, 16, 45, 8);
+        ctx.fill();
+        // Pied gauche
+        ctx.fillStyle = getCharacterColor();
+        ctx.filter = 'brightness(0.6)';
+        ctx.beginPath();
+        ctx.ellipse(0, 45, 10, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        
+        // Jambe droite
+        ctx.save();
+        ctx.translate(15, 40);
+        ctx.rotate((-legSwing * Math.PI) / 180);
+        ctx.fillStyle = legColor;
+        ctx.filter = 'brightness(0.8)';
+        drawRoundRect(ctx, -8, 0, 16, 45, 8);
+        ctx.fill();
+        // Pied droit
+        ctx.fillStyle = getCharacterColor();
+        ctx.filter = 'brightness(0.6)';
+        ctx.beginPath();
+        ctx.ellipse(0, 45, 10, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        
+        ctx.filter = 'none';
+        
+        // === CORPS PRINCIPAL ===
+        const bodyGradient = ctx.createLinearGradient(-35, -60, 35, 60);
+        const mainColor = getCharacterColor();
+        bodyGradient.addColorStop(0, mainColor);
+        bodyGradient.addColorStop(0.5, lightenColor(mainColor, 20));
+        bodyGradient.addColorStop(1, darkenColor(mainColor, 20));
+        
+        ctx.fillStyle = bodyGradient;
+        // Ombre réduite pour performance
+        if (characterAnimationFrame % 3 === 0) {
+            ctx.shadowColor = getCharacterGlow();
+            ctx.shadowBlur = 10;
+        }
+        drawRoundRect(ctx, -35, -60, 70, 100 + breatheOffset, 20);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        
+        // === BRAS ===
+        const armSwing = walkCycle * 20;
+        
+        // Bras gauche
+        ctx.save();
+        ctx.translate(-35, -30);
+        ctx.rotate((armSwing * Math.PI) / 180);
+        ctx.fillStyle = mainColor;
+        ctx.filter = 'brightness(0.9)';
+        drawRoundRect(ctx, -10, 0, 20, 50, 10);
+        ctx.fill();
+        // Main gauche
+        ctx.beginPath();
+        ctx.arc(0, 50, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        
+        // Bras droit
+        ctx.save();
+        ctx.translate(35, -30);
+        ctx.rotate((-armSwing * Math.PI) / 180);
+        ctx.fillStyle = mainColor;
+        ctx.filter = 'brightness(0.9)';
+        drawRoundRect(ctx, -10, 0, 20, 50, 10);
+        ctx.fill();
+        // Main droite
+        ctx.beginPath();
+        ctx.arc(0, 50, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        
+        ctx.filter = 'none';
+        
+        // === TÊTE ===
+        const headRotation = Math.sin(characterAnimationFrame * 0.04) * 0.08;
+        ctx.save();
+        ctx.translate(0, -85 + headBob);
+        ctx.rotate(headRotation);
+        
+        // Tête avec dégradé
+        const headGradient = ctx.createRadialGradient(0, 0, 10, 0, 0, 30);
+        headGradient.addColorStop(0, lightenColor(mainColor, 30));
+        headGradient.addColorStop(1, mainColor);
+        ctx.fillStyle = headGradient;
+        ctx.beginPath();
+        ctx.arc(0, 0, 30, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Cheveux/Chapeau selon autonomie
+        if (autonomie > 60) {
+            // Couronne de liberté (simplifiée)
+            ctx.fillStyle = '#FFD700';
+            for (let i = 0; i < 5; i++) {
+                const angle = (i * Math.PI * 2) / 5 - Math.PI / 2;
+                ctx.save();
+                ctx.rotate(angle);
+                ctx.beginPath();
+                ctx.moveTo(0, -30);
+                ctx.lineTo(-5, -40);
+                ctx.lineTo(5, -40);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+        
+        ctx.restore();
+        
+        // === YEUX EXPRESSIFS ===
+        const eyeBlink = Math.floor(characterAnimationFrame / 100) % 60 === 0 ? 2 : 0;
+        const eyeY = centerY - 85 + floatOffset + headBob;
+        const pupilX = Math.sin(characterAnimationFrame * 0.02) * 2;
+        
+        ctx.save();
+        ctx.translate(centerX, eyeY);
+        
+        if (eyeBlink === 0) {
+            // Blanc des yeux
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(-10, 0, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(10, 0, 6, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Pupilles
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.arc(-10 + pupilX, 0, 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(10 + pupilX, 0, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Reflets
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath();
+            ctx.arc(-11 + pupilX, -1, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(9 + pupilX, -1, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+        } else {
+            // Yeux fermés (arc)
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.arc(-10, 0, 6, 0, Math.PI);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(10, 0, 6, 0, Math.PI);
+            ctx.stroke();
+        }
+        ctx.restore();
+        
+        // === BOUCHE EXPRESSIVE ===
+        const mouthMovement = Math.sin(characterAnimationFrame * 0.06) * 1.5;
+        const mouthY = centerY - 75 + floatOffset + headBob;
+        
+        ctx.save();
+        ctx.translate(centerX, mouthY);
+        ctx.strokeStyle = '#000000';
+        ctx.fillStyle = '#FF6B9D';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        
+        if (choiceRatio > 0.7) {
+            // Grand sourire avec dents
+            ctx.beginPath();
+            ctx.arc(0, 0, 10, 0, Math.PI);
+            ctx.stroke();
+            // Dents
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(-8, 0, 16, 5);
+            ctx.strokeRect(-8, 0, 16, 5);
+        } else if (choiceRatio > 0.3) {
+            // Neutre/sérieux
+            ctx.beginPath();
+            ctx.moveTo(-10, 5 + mouthMovement);
+            ctx.lineTo(10, 5 + mouthMovement);
+            ctx.stroke();
+        } else {
+            // Très triste
+            ctx.beginPath();
+            ctx.arc(0, 10, 10, Math.PI, 0);
+            ctx.stroke();
+            // Larmes
+            ctx.fillStyle = '#00CCFF';
+            ctx.beginPath();
+            ctx.arc(-15, 0, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(15, 0, 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.restore();
+        
+        // === SYSTÈME DE PARTICULES AVANCÉ ===
+        // Générer particules selon l'état (limité)
+        if (characterParticles.length < MAX_PARTICLES && autonomyRatio > 0.5 && Math.random() > 0.85) {
+            characterParticles.push({
+                x: centerX + (Math.random() - 0.5) * 120,
+                y: canvas.height - 20,
+                vx: (Math.random() - 0.5) * 3,
+                vy: -3 - Math.random() * 3,
+                life: 1,
+                size: 2 + Math.random() * 4,
+                type: autonomyRatio > 0.8 ? 'star' : 'circle',
+                color: autonomyRatio > 0.8 ? '#00ff66' : '#00ccff',
+                rotation: Math.random() * Math.PI * 2
+            });
+        }
+        
+        // Particules d'écologie
+        if (characterParticles.length < MAX_PARTICLES && ecologyRatio > 0.6 && Math.random() > 0.92) {
+            characterParticles.push({
+                x: centerX + (Math.random() - 0.5) * 150,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 1,
+                vy: -1 - Math.random() * 1,
+                life: 1,
+                size: 3 + Math.random() * 3,
+                type: 'leaf',
+                color: '#00ff66',
+                rotation: Math.random() * Math.PI * 2,
+                rotationSpeed: (Math.random() - 0.5) * 0.2
+            });
+        }
+        
+        // Particules de corruption
+        const goliatCount = choicesHistory.filter(c => c.type === 'goliath').length;
+        if (characterParticles.length < MAX_PARTICLES && goliatCount > 2 && Math.random() > 0.94) {
+            characterParticles.push({
+                x: centerX + (Math.random() - 0.5) * 100,
+                y: Math.random() * 50,
+                vx: (Math.random() - 0.5) * 2,
+                vy: 2 + Math.random() * 2,
+                life: 1,
+                size: 3 + Math.random() * 3,
+                type: 'smoke',
+                color: '#ff3333',
+                rotation: 0
+            });
+        }
+        
+        // Dessiner et animer les particules
+        characterParticles = characterParticles.filter(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life -= 0.015;
+            if (p.rotationSpeed) p.rotation += p.rotationSpeed;
+            
+            if (p.life > 0) {
+                ctx.save();
+                ctx.globalAlpha = p.life;
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation);
+                
+                ctx.fillStyle = p.color;
+                if (p.type === 'star') {
+                    // Étoile simplifiée (juste un carré tourné)
+                    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                } else {
+                    // Cercle simple pour tous les autres
+                    ctx.beginPath();
+                    ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.restore();
+                return true;
+            }
+            return false;
+        });
+        
+        // === ANNEAUX D'ÉNERGIE ROTATIFS ===
+        if (energyRings.length < MAX_RINGS && autonomyRatio > 0.5) {
+            // Créer nouveaux anneaux
+            if (characterAnimationFrame % 90 === 0) {
+                energyRings.push({
+                    radius: 40,
+                    maxRadius: 120,
+                    life: 1,
+                    color: autonomyRatio > 0.8 ? '#00ff66' : '#00ccff',
+                    speed: 0.8
+                });
+            }
+        }
+        
+        // Dessiner et animer les anneaux
+        energyRings = energyRings.filter(ring => {
+            ring.radius += ring.speed;
+            ring.life = 1 - (ring.radius / ring.maxRadius);
+            
+            if (ring.life > 0) {
+                ctx.save();
+                ctx.translate(centerX, centerY + floatOffset);
+                ctx.strokeStyle = ring.color;
+                ctx.globalAlpha = ring.life * 0.6;
+                ctx.lineWidth = 4;
+                ctx.shadowColor = ring.color;
+                ctx.shadowBlur = 15;
+                ctx.beginPath();
+                ctx.arc(0, 0, ring.radius, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+                return true;
+            }
+            return false;
+        });
+        
+        // Aura principale pulsante (simplifiée)
+        if (characterAnimationFrame % 2 === 0 && (autonomyRatio > 0.6 || ecologyRatio > 0.6)) {
+            const mainAuraPulse = Math.sin(characterAnimationFrame * 0.08) * 10 + 75;
+            const mainAuraOpacity = Math.sin(characterAnimationFrame * 0.08) * 0.2 + 0.4;
+            const auraColor = autonomyRatio > ecologyRatio ? '#00ccff' : '#00ff66';
+            
+            ctx.save();
+            ctx.translate(centerX, centerY + floatOffset);
+            ctx.strokeStyle = auraColor;
+            ctx.globalAlpha = mainAuraOpacity;
+            ctx.lineWidth = 4;
+            
+            // Anneau simple
+            ctx.beginPath();
+            ctx.arc(0, 0, mainAuraPulse, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+        
+        // === EFFET DE CORRUPTION DRAMATIQUE ===
+        if (goliatCount > 0) {
+            const corruptionLevel = Math.min(goliatCount / 7, 1);
+            const corruptionPulse = Math.sin(characterAnimationFrame * 0.15) * 0.15 + 0.3;
+            const corruptionIntensity = corruptionLevel * corruptionPulse;
+            
+            // Voile rouge pulsant
+            const redGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, canvas.width);
+            redGradient.addColorStop(0, `rgba(255, 51, 51, ${corruptionIntensity * 0.3})`);
+            redGradient.addColorStop(0.5, `rgba(255, 51, 51, ${corruptionIntensity * 0.5})`);
+            redGradient.addColorStop(1, `rgba(139, 0, 0, ${corruptionIntensity * 0.4})`);
+            ctx.fillStyle = redGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Éclairs rouges pour forte corruption (réduits)
+            if (goliatCount >= 4 && characterAnimationFrame % 120 === 0 && Math.random() > 0.7) {
+                ctx.strokeStyle = 'rgba(255, 51, 51, 0.9)';
+                ctx.lineWidth = 3;
+                ctx.shadowColor = '#ff3333';
+                ctx.shadowBlur = 20;
+                const x1 = Math.random() * canvas.width;
+                const y1 = 0;
+                const x2 = x1 + (Math.random() - 0.5) * 100;
+                const y2 = canvas.height;
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo((x1 + x2) / 2 + (Math.random() - 0.5) * 50, canvas.height / 2);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+            
+            // Chaînes de corruption pour niveau élevé
+            if (goliatCount >= 6) {
+                ctx.strokeStyle = 'rgba(139, 0, 0, 0.6)';
+                ctx.lineWidth = 4;
+                for (let i = 0; i < 3; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(Math.random() * canvas.width, 0);
+                    ctx.lineTo(centerX + (Math.random() - 0.5) * 50, centerY + floatOffset);
+                    ctx.stroke();
+                }
+            }
+        }
+        
+        // === BADGES D'ÉTAT SIMPLIFIÉS ===
+        // Afficher seulement tous les 3 frames pour performance
+        if (characterAnimationFrame % 3 === 0) {
+            const badgeY = canvas.height - 25;
+            ctx.font = 'bold 11px Arial';
+            ctx.textAlign = 'left';
+            
+            // Badge autonomie simplifié
+            if (autonomie >= 80) {
+                ctx.fillStyle = '#00ff66';
+                ctx.fillText('🦅 LIBRE', 10, badgeY);
+            } else if (autonomie < 20) {
+                ctx.fillStyle = '#ff3333';
+                ctx.fillText('⛓️ DÉPEND', 10, badgeY);
+            }
+            
+            // Badge écologie simplifié
+            if (ecologie >= 80) {
+                ctx.fillStyle = '#00ff66';
+                ctx.fillText('🌍 VERT', canvas.width - 70, badgeY);
+            } else if (ecologie < 40) {
+                ctx.fillStyle = '#ff3333';
+                ctx.fillText('💨 POLLUÉ', canvas.width - 75, badgeY);
+            }
+            
+            // Badge de corruption
+            if (goliatCount >= 5) {
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#ff3333';
+                ctx.fillText('⚠️ CORROMPU', canvas.width / 2, 15);
+            }
+            
+            ctx.textAlign = 'left';
+        }
+        
+        // Mise à jour du statut avec animation de compteur
+        const displayedAutonomy = document.getElementById('char-autonomy');
+        const displayedEcology = document.getElementById('char-ecology');
+        displayedAutonomy.textContent = Math.round(autonomie);
+        displayedEcology.textContent = Math.round(ecologie);
+        
+        // Continuer l'animation
+        requestAnimationFrame(drawCharacter);
+    }
+    
+    // Fonctions d'animation du personnage désactivées
+
+    function drawRoundRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+    }
+
+    function getCharacterColor() {
+        const autonomyRatio = autonomie / 100;
+        const ecologyRatio = ecologie / 100;
+        const avgScore = (autonomyRatio + ecologyRatio) / 2;
+        
+        if (avgScore > 0.75) {
+            return '#00ff66'; // Vert: Bien équilibré
+        } else if (avgScore > 0.5) {
+            return '#00ccff'; // Bleu: Équilibré
+        } else if (avgScore > 0.25) {
+            return '#ffff00'; // Jaune: Risqué
+        } else {
+            return '#ff3333'; // Rouge: En danger
+        }
+    }
+
+    function getCharacterGlow() {
+        const autonomyRatio = autonomie / 100;
+        const ecologyRatio = ecologie / 100;
+        const avgScore = (autonomyRatio + ecologyRatio) / 2;
+        
+        if (avgScore > 0.75) {
+            return 'rgba(0, 255, 102, 0.8)';
+        } else if (avgScore > 0.5) {
+            return 'rgba(0, 204, 255, 0.8)';
+        } else if (avgScore > 0.25) {
+            return 'rgba(255, 255, 0, 0.8)';
+        } else {
+            return 'rgba(255, 51, 51, 0.8)';
+        }
+    }
+    
+    function lightenColor(color, percent) {
+        const num = parseInt(color.replace('#', ''), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = Math.min(255, (num >> 16) + amt);
+        const G = Math.min(255, (num >> 8 & 0x00FF) + amt);
+        const B = Math.min(255, (num & 0x0000FF) + amt);
+        return `rgb(${R}, ${G}, ${B})`;
+    }
+    
+    function darkenColor(color, percent) {
+        const num = parseInt(color.replace('#', ''), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = Math.max(0, (num >> 16) - amt);
+        const G = Math.max(0, (num >> 8 & 0x00FF) - amt);
+        const B = Math.max(0, (num & 0x0000FF) - amt);
+        return `rgb(${R}, ${G}, ${B})`;
+    }
+    
+    function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+        let rot = Math.PI / 2 * 3;
+        let x = cx;
+        let y = cy;
+        const step = Math.PI / spikes;
+        
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - outerRadius);
+        for (let i = 0; i < spikes; i++) {
+            x = cx + Math.cos(rot) * outerRadius;
+            y = cy + Math.sin(rot) * outerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+            
+            x = cx + Math.cos(rot) * innerRadius;
+            y = cy + Math.sin(rot) * innerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+        }
+        ctx.lineTo(cx, cy - outerRadius);
+        ctx.closePath();
+        ctx.fill();
     }
 
     // --- MOTEUR DE JEU ---
@@ -667,6 +1402,9 @@
             type: choice.type, // Ajouter type pour compatibility avec achievements
             isGood: choice.type !== 'goliath' // Tout sauf Goliath = bon choix (david, nird, etc.)
         });
+        
+        // === ANIMATIONS 2D SELON LE CHOIX ===
+        playChoiceAnimation(choice, index);
         
         choice.effect();
         checkAchievements(); // Vérifier les achievements après chaque choix
