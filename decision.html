@@ -47,6 +47,7 @@
         .text-shadow-neon { text-shadow: 0 0 5px currentColor; }
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         
         .chat-scroll::-webkit-scrollbar { width: 6px; }
         .chat-scroll::-webkit-scrollbar-track { background: #121212; }
@@ -414,6 +415,10 @@
 <script>
     // --- VARIABLES D'ÉTAT ---
     let tour = 1; 
+    let choicesHistory = []; // Historique des choix
+    let unlockedChoices = {}; // Choix débloqués par scénario
+    let blockedChoices = {}; // Choix bloqués par scénario
+    let blockReasons = {}; // Raisons de blocage dynamiques (quel choix a causé le blocage)
 
     // Lecture URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -488,8 +493,7 @@
         container.innerHTML = "";
         
         if (!currentData) {
-            document.getElementById("scenario-title").innerText = "SIMULATION TERMINÉE";
-            document.getElementById("scenario-desc").innerText = `> Score Final: Budget ${budget}k | Auto ${autonomie}% | Éco ${ecologie}`;
+            renderEndScreen();
             return;
         }
 
@@ -497,21 +501,67 @@
         document.getElementById("scenario-desc").innerText = currentData.desc;
 
         currentData.options.forEach((opt, index) => {
+            // Vérifier si le choix est bloqué ou débloqué
+            const choiceKey = `${tour}_${index}`;
+            const blockedInfo = blockedChoices[choiceKey];
+            const isBlocked = blockedInfo && blockedInfo.blocked;
+            const blockReason = isBlocked ? blockReasons[choiceKey] || blockedInfo.reason : "";
+            const isUnlocked = !opt.requiresUnlock || unlockedChoices[choiceKey];
+            const unlockReason = opt.unlockReason || "Prérequis non remplis";
+            
+            // Déterminer l'état du choix
+            const canSelect = !isBlocked && isUnlocked;
+            
             const isGoliath = opt.type === "goliath";
             const color = isGoliath ? "neon-red" : "neon-green";
+            
+            // Styles pour choix bloqués
+            const cardOpacity = isBlocked || !isUnlocked ? "opacity-50 grayscale" : "";
+            
+            // Badge bloqué avec raison
+            const blockedBadge = isBlocked 
+                ? `<span class="absolute top-2 left-2 text-xs px-2 py-1 bg-text-dark/50 border border-text-dark text-white rounded flex items-center gap-1" title="${blockReason}"><span class="material-symbols-outlined text-sm">lock</span>BLOQUÉ</span>` 
+                : '';
+            
+            // Badge débloqué avec raison
+            const unlockedBadge = opt.requiresUnlock && unlockedChoices[choiceKey] 
+                ? `<span class="absolute top-2 left-2 text-xs px-2 py-1 bg-neon-blue/30 border border-neon-blue text-neon-blue rounded" title="${opt.unlockReason || 'Débloqué par choix précédent'}">DÉBLOQUÉ</span>` 
+                : '';
+            
+            // Badge verrouillé avec raison
+            const lockedBadge = opt.requiresUnlock && !isUnlocked
+                ? `<span class="absolute top-2 left-2 text-xs px-2 py-1 bg-text-dark/50 border border-text-dark text-white rounded flex items-center gap-1" title="${unlockReason}"><span class="material-symbols-outlined text-sm">lock</span>VERROUILLÉ</span>`
+                : '';
+            
+            // Message de raison sous la description
+            const reasonMessage = isBlocked 
+                ? `<p class="text-xs text-text-dark mt-2 italic">⚠️ ${blockReason}</p>` 
+                : !isUnlocked 
+                ? `<p class="text-xs text-text-dark mt-2 italic">🔒 ${unlockReason}</p>`
+                : '';
+            
+            // Bouton désactivé si bloqué
+            const buttonDisabled = !canSelect ? 'disabled' : '';
+            const buttonClass = !canSelect 
+                ? 'bg-gray-800 text-gray-500 border-gray-700 cursor-not-allowed'
+                : `bg-${color}/10 text-${color} hover:bg-${color} hover:text-black border-${color}`;
+            const buttonText = isBlocked ? 'BLOQUÉ' : !isUnlocked ? 'VERROUILLÉ' : 'EXÉCUTER';
+            
             const card = `
-            <div class="flex flex-col bg-black/50 border-2 border-${color} shadow-glitch-${isGoliath?'red':'green'} glitch-border hover:scale-[1.01] transition-all">
+            <div class="flex flex-col bg-black/50 border-2 border-${isBlocked || !isUnlocked ? 'gray-700' : color} ${isBlocked || !isUnlocked ? 'shadow-none' : `shadow-glitch-${isGoliath?'red':'green'}`} glitch-border ${canSelect ? 'hover:scale-[1.01]' : ''} transition-all ${cardOpacity}">
                 <div class="p-6 relative">
+                    ${blockedBadge}${unlockedBadge}${lockedBadge}
                     <span class="material-symbols-outlined text-4xl text-${color} absolute top-4 right-4">${opt.icon}</span>
                     <h3 class="text-xl font-bold text-${color}">${opt.title}</h3>
-                    <p class="text-sm text-text-dark mt-2 h-12">${opt.desc}</p>
+                    <p class="text-sm text-text-dark mt-2">${opt.desc}</p>
+                    ${reasonMessage}
                 </div>
                 <div class="border-t border-${color}/50 p-4 space-y-2 text-sm">
                     ${opt.stats.map(s => `<div class="flex justify-between"><span class="text-text-dark">${s.l}</span><span class="${s.c}">${s.v}</span></div>`).join('')}
                 </div>
                 <div class="p-4 mt-auto">
-                    <button onclick="choisir(${index})" class="w-full bg-${color}/10 text-${color} hover:bg-${color} hover:text-black font-bold py-3 border border-${color} transition-colors">
-                        EXÉCUTER
+                    <button onclick="choisir(${index})" ${buttonDisabled} class="w-full ${buttonClass} font-bold py-3 border transition-colors">
+                        ${buttonText}
                     </button>
                 </div>
             </div>`;
@@ -522,13 +572,109 @@
 
     function choisir(index) {
         const choice = scenarios[tour].options[index];
+        const scenarioData = scenarios[tour];
+        
+        // Vérifier si le choix est bloqué
+        const choiceKey = `${tour}_${index}`;
+        const blockedInfo = blockedChoices[choiceKey];
+        const isBlocked = blockedInfo && blockedInfo.blocked;
+        const isUnlocked = !choice.requiresUnlock || unlockedChoices[choiceKey];
+        
+        // Empêcher la sélection si bloqué ou non débloqué
+        if (isBlocked || !isUnlocked) {
+            return;
+        }
+        
+        // Enregistrer le choix
+        choicesHistory.push({
+            tour: tour,
+            scenarioTitle: scenarioData.title,
+            choiceTitle: choice.title,
+            choiceType: choice.type,
+            isGood: choice.type !== 'goliath' // Tout sauf Goliath = bon choix (david, nird, etc.)
+        });
+        
         choice.effect();
+        
+        // Gérer les corrélations (déblocages et blocages)
+        if (choice.unlocks) {
+            choice.unlocks.forEach(unlock => {
+                unlockedChoices[unlock] = true;
+            });
+        }
+        if (choice.blocks) {
+            choice.blocks.forEach(block => {
+                blockedChoices[block] = {
+                    blocked: true,
+                    reason: choice.blockReason || "Choix précédent incompatible"
+                };
+                // Raison dynamique : mention du choix du joueur
+                blockReasons[block] = `Vous avez choisi "${choice.title}" qui rend cette option incompatible`;
+            });
+        }
+        
+        // Vérifier si un événement aléatoire se déclenche
+        const randomEvent = triggerRandomEvent();
+        if (randomEvent) {
+            showRandomEvent(randomEvent);
+        }
+        
         tour++;
         document.getElementById("choices-container").innerHTML = `<div class="col-span-2 text-center text-neon-blue animate-pulse">TRAITEMENT DES DONNÉES...</div>`;
         setTimeout(() => {
             renderTour();
-            document.getElementById("feedback-area").classList.add("hidden");
+            // Ne masquer le feedback que si ce n'est pas un événement aléatoire
+            if (!randomEvent) {
+                document.getElementById("feedback-area").classList.add("hidden");
+            }
         }, 600);
+    }
+
+    // --- AFFICHAGE DES ÉVÉNEMENTS ALÉATOIRES ---
+    function showRandomEvent(event) {
+        // Appliquer les effets
+        budget += event.effects.budget;
+        autonomie += event.effects.autonomie;
+        ecologie += event.effects.ecologie;
+        
+        // S'assurer que les valeurs restent dans les limites
+        budget = Math.max(0, budget);
+        autonomie = Math.max(0, Math.min(100, autonomie));
+        ecologie = Math.max(0, Math.min(100, ecologie));
+        
+        updateHeader();
+        
+        // Afficher la notification
+        const feedback = document.getElementById("feedback-area");
+        const effectsText = [];
+        if (event.effects.budget !== 0) effectsText.push(`Budget ${event.effects.budget > 0 ? '+' : ''}${event.effects.budget}k€`);
+        if (event.effects.autonomie !== 0) effectsText.push(`Auto ${event.effects.autonomie > 0 ? '+' : ''}${event.effects.autonomie}%`);
+        if (event.effects.ecologie !== 0) effectsText.push(`Éco ${event.effects.ecologie > 0 ? '+' : ''}${event.effects.ecologie}`);
+        
+        feedback.innerHTML = `
+            <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-3xl text-${event.color}">${event.icon}</span>
+                <div class="flex-1">
+                    <div class="font-bold text-${event.color} text-lg">${event.title}</div>
+                    <div class="text-white text-sm mt-1">${event.desc}</div>
+                    <div class="text-text-dark text-xs mt-2">${event.message}</div>
+                    <div class="flex gap-2 mt-3 text-xs">
+                        ${effectsText.map(e => `<span class="px-2 py-1 bg-white/5 rounded border border-terminal-border">${e}</span>`).join('')}
+                    </div>
+                </div>
+            </div>`;
+        feedback.classList.remove("hidden");
+        
+        // Faire vibrer l'écran pour attirer l'attention
+        document.getElementById("game-view").style.animation = "shake 0.3s";
+        setTimeout(() => {
+            document.getElementById("game-view").style.animation = "";
+        }, 300);
+        
+        // Masquer automatiquement après 8 secondes
+        setTimeout(() => {
+            feedback.classList.add("hidden");
+        }, 8000);
     }
 
     // --- LOGIQUE CHATBOT TROLL ---
@@ -614,6 +760,101 @@
 
     // Initialisation
     renderTour();
+
+    // --- ÉCRAN DE FIN AVEC RÉCAPITULATIF ---
+    function renderEndScreen() {
+        document.getElementById("scenario-title").innerText = "SIMULATION TERMINÉE";
+        document.getElementById("scenario-desc").innerText = `> Score Final: Budget ${budget}k | Auto ${autonomie}% | Éco ${ecologie}`;
+        
+        const goodChoices = choicesHistory.filter(c => c.isGood).length;
+        const badChoices = choicesHistory.filter(c => !c.isGood).length;
+        const totalChoices = choicesHistory.length;
+        const goodPercent = Math.round((goodChoices / totalChoices) * 100);
+        const badPercent = Math.round((badChoices / totalChoices) * 100);
+        
+        const container = document.getElementById("choices-container");
+        container.innerHTML = `
+            <div class="col-span-2 space-y-6">
+                <!-- GRAPHIQUE -->
+                <div class="bg-terminal-bg/80 border-2 border-neon-blue p-6 rounded">
+                    <h3 class="text-xl font-bold text-neon-blue mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined">analytics</span>
+                        ANALYSE DES DÉCISIONS
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-neon-green/10 border border-neon-green p-4 rounded text-center">
+                            <div class="text-4xl font-bold text-neon-green">${goodChoices}</div>
+                            <div class="text-sm text-text-dark mt-1">Choix Durables</div>
+                            <div class="text-xs text-neon-green mt-2">${goodPercent}%</div>
+                        </div>
+                        <div class="bg-neon-red/10 border border-neon-red p-4 rounded text-center">
+                            <div class="text-4xl font-bold text-neon-red">${badChoices}</div>
+                            <div class="text-sm text-text-dark mt-1">Choix Big Tech</div>
+                            <div class="text-xs text-neon-red mt-2">${badPercent}%</div>
+                        </div>
+                    </div>
+                    
+                    <!-- BARRE DE PROGRESSION -->
+                    <div class="relative h-8 bg-terminal-border rounded-full overflow-hidden">
+                        <div class="absolute top-0 left-0 h-full bg-neon-green transition-all duration-1000" style="width: ${goodPercent}%"></div>
+                        <div class="absolute top-0 right-0 h-full bg-neon-red transition-all duration-1000" style="width: ${badPercent}%"></div>
+                    </div>
+                    
+                    <!-- GRAPHIQUE VISUEL -->
+                    <div class="mt-6 flex justify-center items-end gap-2 h-40">
+                        <div class="flex flex-col items-center flex-1">
+                            <div class="w-full bg-neon-green rounded-t transition-all duration-1000" style="height: ${goodPercent}%"></div>
+                            <div class="text-xs text-neon-green mt-2 font-bold">DURABLES</div>
+                        </div>
+                        <div class="flex flex-col items-center flex-1">
+                            <div class="w-full bg-neon-red rounded-t transition-all duration-1000" style="height: ${badPercent}%"></div>
+                            <div class="text-xs text-neon-red mt-2 font-bold">BIG TECH</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- HISTORIQUE DÉTAILLÉ -->
+                <div class="bg-terminal-bg/80 border-2 border-terminal-border p-6 rounded">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined">history</span>
+                        HISTORIQUE DES DÉCISIONS
+                    </h3>
+                    <div class="space-y-3 max-h-96 overflow-y-auto chat-scroll">
+                        ${choicesHistory.map((choice, i) => {
+                            const color = choice.isGood ? 'neon-green' : 'neon-red';
+                            const icon = choice.isGood ? 'check_circle' : 'cancel';
+                            const label = choice.isGood ? 'DURABLE' : 'BIG TECH';
+                            return `
+                            <div class="flex items-start gap-3 p-3 bg-black/50 border-l-4 border-${color} rounded">
+                                <span class="material-symbols-outlined text-${color} text-2xl">${icon}</span>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-xs font-bold text-text-dark">TOUR ${choice.tour}</span>
+                                        <span class="text-xs px-2 py-0.5 rounded bg-${color}/20 text-${color} border border-${color}/50">${label}</span>
+                                    </div>
+                                    <div class="text-sm text-white font-semibold">${choice.scenarioTitle}</div>
+                                    <div class="text-xs text-text-dark mt-1">➜ ${choice.choiceTitle}</div>
+                                </div>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>
+                
+                <!-- ACTIONS -->
+                <div class="flex gap-4">
+                    <button onclick="location.reload()" class="flex-1 bg-neon-blue/20 text-neon-blue border border-neon-blue py-3 rounded hover:bg-neon-blue hover:text-black font-bold transition-colors">
+                        <span class="material-symbols-outlined text-lg align-middle mr-2">refresh</span>
+                        RECOMMENCER
+                    </button>
+                    <button onclick="window.location.href='index.html'" class="flex-1 bg-terminal-border text-white border border-terminal-border py-3 rounded hover:bg-white/10 font-bold transition-colors">
+                        <span class="material-symbols-outlined text-lg align-middle mr-2">home</span>
+                        ACCUEIL
+                    </button>
+                </div>
+            </div>
+        `;
+    }
 
     // --- VISUALISEUR AUDIO ---
     let audioContext = null;

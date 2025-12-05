@@ -119,6 +119,8 @@ const scenarios = {
                     {l:"Eco", v:`-${Math.round(15*ecoMult)} pts`, c:"text-danger"} 
                 ],
                 effect: () => { budget -= (20 * costMult); autonomie -= 10; ecologie -= (15 * ecoMult); },
+                blocks: ["3_1"], // Bloque l'option Nextcloud au tour 3
+                blockReason: "Infrastructure propriétaire incompatible",
             },
             {
                 type: "nird", title: "Reconditionnement (NIRD)", 
@@ -130,6 +132,8 @@ const scenarios = {
                     {l:"Eco", v:"+25 pts", c:"text-success"} 
                 ],
                 effect: () => { autonomie += (20 * rewardMult); ecologie += 25; },
+                unlocks: ["5_1", "8_1"], // Débloque des options avancées aux tours 5 et 8
+                unlockReason: "Expertise technique acquise",
             }
         ]
     },
@@ -151,6 +155,8 @@ const scenarios = {
                     {l:"Eco", v:`-${Math.round(50*ecoMult)} pts`, c:"text-danger"} 
                 ],
                 effect: () => { budget -= (10 * costMult); autonomie -= 10; ecologie -= (50 * ecoMult); },
+                blocks: ["4_1", "6_1"], // Bloque certaines options Linux futures
+                blockReason: "Dépendance Microsoft renforcée",
             },
             {
                 type: "nird", title: "Linux Mint pour Tous", 
@@ -162,6 +168,8 @@ const scenarios = {
                     {l:"Eco", v:"+10 pts", c:"text-success"} 
                 ],
                 effect: () => { budget -= 0.2; autonomie += (20 * rewardMult); ecologie += 10; },
+                unlocks: ["7_1", "10_1"], // Débloque des options avancées
+                unlockReason: "Compétences Linux développées",
             }
         ]
     },
@@ -208,6 +216,9 @@ const scenarios = {
                     {l:"Eco", v:"-5 pts", c:"text-danger"} 
                 ],
                 effect: () => { budget -= (1 * costMult); autonomie += (25 * rewardMult); ecologie -= 5; },
+                requiresUnlock: true, // Nécessite d'avoir choisi NIRD au tour 1
+                unlocks: ["9_1"], // Débloque serveur de streaming au tour 9
+                unlockReason: "Infrastructure open source en place",
             }
         ]
     },
@@ -228,6 +239,8 @@ const scenarios = {
                     {l:"Eco", v:`-${Math.round(10*ecoMult)} pts`, c:"text-danger"} 
                 ],
                 effect: () => { budget -= (2 * costMult); ecologie -= (10 * ecoMult); },
+                blocks: ["11_1"], // Bloque l'option FabLab
+                blockReason: "Culture du jetable installée",
             },
             {
                 type: "nird", title: "Repair Café Communautaire", 
@@ -239,6 +252,8 @@ const scenarios = {
                     {l:"Auto", v:"+5%", c:"text-success"} 
                 ],
                 effect: () => { budget -= 0.1; ecologie += (10 * ecoMult); autonomie += 5; },
+                unlocks: ["11_1"], // Débloque FabLab
+                unlockReason: "Culture de réparation établie",
             }
         ]
     },
@@ -271,6 +286,9 @@ const scenarios = {
                     {l:"Eco", v:"+10 pts", c:"text-success"} 
                 ],
                 effect: () => { budget += 1; autonomie += (15 * rewardMult); ecologie += 10; },
+                requiresUnlock: true, // Nécessite choix NIRD au tour 1
+                unlocks: ["13_1", "16_1"], // Débloque club de codage et projets étudiants
+                unlockReason: "Équipe pédagogique motivée",
             }
         ]
     },
@@ -785,3 +803,134 @@ const scenarios = {
         ]
     }
 };
+
+// --- ÉVÉNEMENTS ALÉATOIRES ---
+const randomEvents = [
+    {
+        title: "🎉 DONATION SURPRISE",
+        desc: "Un ancien élève devenu dev vous envoie 50 vieux PC reconditionnés !",
+        icon: "volunteer_activism",
+        color: "neon-green",
+        effects: { budget: 0, autonomie: 5, ecologie: 15 },
+        message: "Don reçu ! L'équipe est motivée et le matériel est prêt.",
+        probability: 0.15
+    },
+    {
+        title: "⚡ PANNE ÉLECTRIQUE",
+        desc: "Orage violent : 10 PC ont grillé. Heureusement, Linux redémarre facilement.",
+        icon: "warning",
+        color: "warning",
+        effects: { budget: -2, autonomie: -5, ecologie: 0 },
+        message: "Dégâts limités grâce à la résilience du système.",
+        probability: 0.10
+    },
+    {
+        title: "📰 ARTICLE DE PRESSE POSITIF",
+        desc: "Un journaliste local écrit un article élogieux sur votre démarche écologique.",
+        icon: "newspaper",
+        color: "neon-blue",
+        effects: { budget: 3, autonomie: 0, ecologie: 10 },
+        message: "Visibilité accrue ! La mairie envisage de suivre votre exemple.",
+        probability: 0.12
+    },
+    {
+        title: "🐛 BUG CRITIQUE MICROSOFT",
+        desc: "Une faille 0-day affecte Windows. Vos systèmes Linux sont immunisés.",
+        icon: "shield",
+        color: "neon-green",
+        effects: { budget: 0, autonomie: 10, ecologie: 0 },
+        message: "Zéro impact ! L'autonomie technique prouve sa valeur.",
+        probability: 0.08
+    },
+    {
+        title: "💸 AUDIT SURPRISE",
+        desc: "Inspection des licences. Heureusement, vous êtes 100% légal avec le libre.",
+        icon: "gavel",
+        color: "neon-green",
+        effects: { budget: 0, autonomie: 5, ecologie: 0 },
+        message: "Aucune amende ! Contrairement à l'école voisine sous Windows pirate.",
+        probability: 0.10
+    },
+    {
+        title: "🔥 CYBERATTAQUE RANSOMWARE",
+        desc: "Tentative d'attaque par ransomware. Vos sauvegardes locales vous sauvent.",
+        icon: "security",
+        color: "neon-red",
+        effects: { budget: -1, autonomie: 0, ecologie: 0 },
+        message: "Attaque repoussée ! Coût de la restauration minimal.",
+        probability: 0.08
+    },
+    {
+        title: "🌱 CERTIFICATION GREEN IT",
+        desc: "Votre lycée obtient un label écologique reconnu nationalement.",
+        icon: "eco",
+        color: "neon-green",
+        effects: { budget: 5, autonomie: 0, ecologie: 20 },
+        message: "Subvention débloquée ! Les parents d'élèves sont fiers.",
+        probability: 0.10
+    },
+    {
+        title: "🤝 PARTENARIAT UNIVERSITÉ",
+        desc: "Une fac locale propose d'échanger expertise technique contre visibilité.",
+        icon: "handshake",
+        color: "neon-blue",
+        effects: { budget: 0, autonomie: 15, ecologie: 5 },
+        message: "Partenariat signé ! Vos équipes montent en compétence.",
+        probability: 0.12
+    },
+    {
+        title: "😤 GRÈVE DU PERSONNEL",
+        desc: "Les profs protestent contre le changement de logiciels. Négociations nécessaires.",
+        icon: "groups",
+        color: "neon-red",
+        effects: { budget: -3, autonomie: -10, ecologie: 0 },
+        message: "Compromis trouvé après formation supplémentaire.",
+        probability: 0.08
+    },
+    {
+        title: "🎓 ÉLÈVE PRODIGE",
+        desc: "Un élève passionné développe un outil de gestion pour l'établissement.",
+        icon: "psychology",
+        color: "neon-green",
+        effects: { budget: 2, autonomie: 10, ecologie: 5 },
+        message: "Solution maison déployée ! L'élève est devenu ambassadeur.",
+        probability: 0.10
+    },
+    {
+        title: "📉 COUPE BUDGÉTAIRE",
+        desc: "La région réduit les subventions pour l'éducation. Budget en tension.",
+        icon: "trending_down",
+        color: "neon-red",
+        effects: { budget: -5, autonomie: 0, ecologie: 0 },
+        message: "Coup dur. Heureusement, le libre limite les dépenses.",
+        probability: 0.08
+    },
+    {
+        title: "🌍 VISITE INTERNATIONALE",
+        desc: "Une délégation étrangère vient étudier votre modèle open source.",
+        icon: "public",
+        color: "neon-blue",
+        effects: { budget: 4, autonomie: 5, ecologie: 10 },
+        message: "Reconnaissance mondiale ! Votre lycée devient une référence.",
+        probability: 0.07
+    }
+];
+
+// Fonction pour déclencher un événement aléatoire
+function triggerRandomEvent() {
+    // 30% de chance d'avoir un événement à chaque tour
+    if (Math.random() > 0.3) return null;
+    
+    // Sélection pondérée selon les probabilités
+    const roll = Math.random();
+    let cumulative = 0;
+    
+    for (const event of randomEvents) {
+        cumulative += event.probability;
+        if (roll <= cumulative) {
+            return event;
+        }
+    }
+    
+    return null;
+}
